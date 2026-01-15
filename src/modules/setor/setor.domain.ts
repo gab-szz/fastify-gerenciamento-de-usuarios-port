@@ -1,25 +1,24 @@
+import type { setorType } from "./setor.type.js";
+
 export class Setor {
   readonly id?: number;
-  private nome: string;
+  private nome!: string;
+  private criado_em?: Date;
+  private alterado_em?: Date;
+  private excluido_em?: Date;
 
-  private constructor(
-    nome: string,
-    id?: number,
-    criado_em?: Date,
-    alterado_em?: Date,
-    excluido_em?: Date
-  ) {
-    this.nome = nome;
-    if (id) {
-      this.id = id;
-    }
+  private constructor(input: setorType) {
+    Object.assign(this, input);
   }
 
-  criar(
-    nome: string,
-    id?: number,
-    criado_em?: Date,
-    alterado_em?: Date,
-    excluido_em?: Date
-  ) {}
+  static criar(input: setorType) {
+    return new Setor(input);
+  }
+
+  static hidratar(input: setorType) {
+    if (input.id) {
+      throw new Error("");
+    }
+    return new Setor(input);
+  }
 }
