@@ -13,17 +13,17 @@ erDiagram
     perfil {
         int id PK
         string nome
-		datetime criado_em
-		datetime alterado_em
-		datetime excluido_em
+        datetime criado_em
+        datetime alterado_em
+        datetime excluido_em
     }
 
     setor {
         int id PK
         string nome
-		datetime criado_em
-		datetime alterado_em
-		datetime excluido_em
+        datetime criado_em
+        datetime alterado_em
+        datetime excluido_em
     }
 
     endereco {
@@ -32,9 +32,9 @@ erDiagram
         string cidade
         string estado
         string cep
-		datetime criado_em
-		datetime alterado_em
-		datetime excluido_em
+        datetime criado_em
+        datetime alterado_em
+        datetime excluido_em
     }
 
     usuario {
@@ -47,9 +47,9 @@ erDiagram
         int setor_id FK
         int perfil_id FK
         int superior_id FK
-		datetime criado_em
-		datetime alterado_em
-		datetime excluido_em
+        datetime criado_em
+        datetime alterado_em
+        datetime excluido_em
     }
 
     usuario_endereco {
