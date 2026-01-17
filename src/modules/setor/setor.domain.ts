@@ -12,12 +12,15 @@ export class Setor {
   }
 
   static criar(input: setorType) {
+    if (input.id) {
+      throw new Error("Erro ao criar setor: ID não deve ser fornecido.");
+    }
     return new Setor(input);
   }
 
   static hidratar(input: setorType) {
-    if (input.id) {
-      throw new Error("");
+    if (!input.id) {
+      throw new Error("Erro ao hidratar setor: ID deve ser fornecido.");
     }
     return new Setor(input);
   }
