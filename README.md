@@ -78,7 +78,8 @@ direction TB
 	    +criar()
       +hidratar()
 	    +atualizar()
-      +remover()
+      +excluir()
+      +reativar()
     }
 
 ```
