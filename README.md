@@ -63,3 +63,42 @@ erDiagram
     endereco ||--o{ usuario_endereco : "vinculado a"
     usuario |o--o| usuario : "reporta a (superior)"
 ```
+
+## Diagrama de Classes
+
+```mermaid
+classDiagram
+direction TB
+    class Setor {
+	    +int id
+	    +String nome
+      +int criado_em
+	    +String alterado_em
+      +int excluido_em
+	    +criar()
+      +hidratar()
+	    +atualizar()
+      +remover()
+    }
+
+```
+
+# Diagramas de Casos de Uso
+
+## Setor
+
+Iniciando pela entidade de Setor, que é uma entidade básica do sistema e necessária para a criação do usuário, começaremos mapeando seus casos de uso:
+
+```mermaid
+flowchart LR
+ subgraph subGraph0["Módulo Setor"]
+        UC1["UC01 - Cadastrar Setor"]
+        UC2["UC02 - Consultar Setores"]
+        UC3["UC03 - Atualizar Dados do Setor"]
+        UC4["UC04 - Desativar Setor"]
+        UC5["UC05 - Listar Usuários por Setor"]
+  end
+    User(("Cliente")) --> UC2
+    Admin(("Administrador")) --> UC1 & UC2 & UC3 & UC4
+    UC2 -. extend .-> UC5
+```
