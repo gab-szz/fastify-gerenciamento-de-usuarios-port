@@ -1,3 +1,10 @@
 node_modules/
 coverage/
 dist/
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+.idea/
