@@ -22,11 +22,13 @@ export class Setor {
 
   private constructor(input: setorType) {
     this._nome = input.nome;
-    this._criado_em = input.criado_em;
     this._alterado_em = input.alterado_em;
     this._excluido_em = input.excluido_em;
     if (input.id) {
       this.id = input.id;
+      this._criado_em = input.criado_em;
+    } else {
+      this._criado_em = new Date();
     }
   }
 
@@ -37,6 +39,7 @@ export class Setor {
     if (!input.nome) {
       throw new Error("Erro ao criar setor: nome deve ser fornecido.");
     }
+
     return new Setor(input);
   }
 

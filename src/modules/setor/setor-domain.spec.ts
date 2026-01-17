@@ -49,6 +49,15 @@ describe("Setor", () => {
     test("Deve retornar o nome", () => {
       expect(setor.nome).toBeTypeOf("string");
     });
+    test("Deve retornar a data de criação", () => {
+      expect(setor.criado_em).instanceOf(Date);
+    });
+    test("Deve retornar a data de alteração", () => {
+      expect(setor.alterado_em).toBeUndefined();
+    });
+    test("Deve retornar a data de exclusão", () => {
+      expect(setor.excluido_em).toBeUndefined();
+    });
   });
 
   describe(".atualizar", () => {
