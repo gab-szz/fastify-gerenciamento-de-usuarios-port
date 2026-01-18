@@ -13,4 +13,5 @@ export const fonteDeDados = new DataSource({
   entities: [],
   migrations: [],
   subscribers: [],
+  ssl: { rejectUnauthorized: false }, // Necessário para bancos na AWS
 });

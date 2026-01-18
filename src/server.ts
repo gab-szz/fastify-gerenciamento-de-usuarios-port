@@ -12,10 +12,11 @@ app.addHook("onReady", async () => {
   fonteDeDados
     .initialize()
     .then(() => {
-      console.log("Data Source has been initialized!");
+      console.log("Fonte de Dados inicializada!");
+      console.log(`Aplicação rodando na porta ${env.PORTA}!`);
     })
     .catch((err) => {
-      console.error("Error during Data Source initialization", err);
+      console.error("Ocorreu um erro ao inicializar a fonte de dados", err);
     });
 });
 
