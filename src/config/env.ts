@@ -9,6 +9,7 @@ const EnvSchema = z.object({
   ENDERECO_BD: z.string().min(6),
   PORTA_BD: z.coerce.number(),
   NOME_BD: z.string(),
+  USUARIO_BD: z.string(),
   SENHA_BD: z.string(),
 });
 
