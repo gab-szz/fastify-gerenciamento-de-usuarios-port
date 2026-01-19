@@ -5,6 +5,7 @@ dotenv.config();
 
 const EnvSchema = z.object({
   PORTA: z.coerce.number(),
+  AMBIENTE: z.string().min(3).max(4),
 
   ENDERECO_BD: z.string().min(6),
   PORTA_BD: z.coerce.number(),
