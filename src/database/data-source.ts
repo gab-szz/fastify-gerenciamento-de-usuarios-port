@@ -12,7 +12,7 @@ export const fonteDeDados = new DataSource({
   synchronize: false,
   logging: false,
   entities: [],
-  migrations: [],
+  migrations: ["src/database/migrations/*.ts"],
   subscribers: [],
   ssl: { rejectUnauthorized: false }, // Necessário para bancos na AWS
 });
