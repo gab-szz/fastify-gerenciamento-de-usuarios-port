@@ -49,8 +49,9 @@ describe("Setor", () => {
     test("Deve retornar o nome", () => {
       expect(setor.nome).toBeTypeOf("string");
     });
-    test("Deve retornar a data de criação", () => {
-      expect(setor.criado_em).instanceOf(Date);
+    test("Deve retornar a data de criação como undefined para setor novo", () => {
+      // Um setor criado em memória, antes de ir ao banco, não tem data oficial
+      expect(setor.criado_em).toBeUndefined();
     });
     test("Deve retornar a data de alteração", () => {
       expect(setor.alterado_em).toBeUndefined();

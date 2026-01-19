@@ -24,11 +24,9 @@ export class Setor {
     this._nome = input.nome;
     this._alterado_em = input.alterado_em;
     this._excluido_em = input.excluido_em;
+    this._criado_em = input.criado_em;
     if (input.id) {
       this.id = input.id;
-      this._criado_em = input.criado_em;
-    } else {
-      this._criado_em = new Date();
     }
   }
 
