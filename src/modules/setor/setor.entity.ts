@@ -19,22 +19,26 @@ export class SetorEntity {
   })
   nome!: string;
 
-  @CreateDateColumn({ name: "criado_em", type: "timestamptz", nullable: false })
+  // O TypeORM preencherá automaticamente no INSERT se o valor for nulo
+  @CreateDateColumn({
+    name: "criado_em",
+    type: "timestamptz",
+  })
   criadoEm!: Date;
 
+  // Como o seu Domínio gera um "new Date()", o TypeORM persistirá esse valor exato
   @UpdateDateColumn({
     name: "alterado_em",
     type: "timestamptz",
     nullable: true,
-    default: null,
   })
   alteradoEm!: Date | null;
 
+  // Importante: mudei para timestamptz para manter o padrão das outras colunas
   @DeleteDateColumn({
     name: "excluido_em",
-    type: "timestamp",
+    type: "timestamptz",
     nullable: true,
-    default: null,
   })
   excluidoEm!: Date | null;
 }
