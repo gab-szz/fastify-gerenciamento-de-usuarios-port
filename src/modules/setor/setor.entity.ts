@@ -5,40 +5,37 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-} from "typeorm";
+} from 'typeorm';
 
-@Entity("setor")
+@Entity('setor')
 export class SetorEntity {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id?: number;
 
   @Column({
-    name: "nome",
-    type: "varchar",
-    length: "50",
+    name: 'nome',
+    type: 'varchar',
+    length: '50',
   })
   nome!: string;
 
-  // O TypeORM preencherá automaticamente no INSERT se o valor for nulo
   @CreateDateColumn({
-    name: "criado_em",
-    type: "timestamptz",
+    name: 'criado_em',
+    type: 'timestamptz',
   })
-  criadoEm!: Date;
+  criadoEm?: Date;
 
-  // Como o seu Domínio gera um "new Date()", o TypeORM persistirá esse valor exato
   @UpdateDateColumn({
-    name: "alterado_em",
-    type: "timestamptz",
+    name: 'alterado_em',
+    type: 'timestamptz',
     nullable: true,
   })
-  alteradoEm!: Date | null;
+  alteradoEm?: Date;
 
-  // Importante: mudei para timestamptz para manter o padrão das outras colunas
   @DeleteDateColumn({
-    name: "excluido_em",
-    type: "timestamptz",
+    name: 'excluido_em',
+    type: 'timestamptz',
     nullable: true,
   })
-  excluidoEm!: Date | null;
+  excluidoEm?: Date;
 }
