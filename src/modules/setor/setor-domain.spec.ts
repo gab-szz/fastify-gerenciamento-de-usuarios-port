@@ -1,105 +1,105 @@
-import { beforeEach, describe, expect, test } from "vitest";
-import { Setor } from "./setor.domain.js";
+import { beforeEach, describe, expect, test } from 'vitest';
+import { Setor } from './setor.domain.js';
 
-describe("Setor", () => {
+describe('Setor', () => {
   let setor: Setor;
-  const nome = "Tecnologia da Informação";
+  const nome = 'Tecnologia da Informação';
 
   beforeEach(() => {
     setor = Setor.criar({ nome: nome });
   });
 
-  describe(".criar", () => {
-    test("Deve criar um setor", () => {
+  describe('.criar', () => {
+    test('Deve criar um setor', () => {
       expect(setor).toBeInstanceOf(Setor);
     });
 
-    test("Deve dar erro ao criar um setor com ID fornecido", () => {
-      const nome = "Tecnologia da Informação";
+    test('Deve dar erro ao criar um setor com ID fornecido', () => {
+      const nome = 'Tecnologia da Informação';
       expect(() => Setor.criar({ nome, id: 1 })).toThrow(
-        "Erro ao criar setor: ID não deve ser fornecido.",
+        'Erro ao criar setor: ID não deve ser fornecido.',
       );
     });
 
-    test("Deve dar erro ao criar um setor sem nome", () => {
+    test('Deve dar erro ao criar um setor sem nome', () => {
       expect(() => Setor.criar({} as any)).toThrow(
-        "Erro ao criar setor: nome deve ser fornecido.",
+        'Erro ao criar setor: nome deve ser fornecido.',
       );
     });
   });
 
-  describe(".hidratar", () => {
-    test("Deve hidratar um setor", () => {
+  describe('.hidratar', () => {
+    test('Deve hidratar um setor', () => {
       const dadosSetor = { nome, id: 1 };
 
       const setor = Setor.hidratar(dadosSetor);
       expect(setor).toBeInstanceOf(Setor);
     });
 
-    test("Deve dar erro ao hidratar setor com ID não fornecido", () => {
+    test('Deve dar erro ao hidratar setor com ID não fornecido', () => {
       const dadosSetor = { nome };
 
       expect(() => Setor.hidratar(dadosSetor)).toThrow(
-        "Erro ao hidratar setor: ID deve ser fornecido.",
+        'Erro ao hidratar setor: ID deve ser fornecido.',
       );
     });
   });
 
-  describe("getters", () => {
-    test("Deve retornar o nome", () => {
-      expect(setor.nome).toBeTypeOf("string");
+  describe('getters', () => {
+    test('Deve retornar o nome', () => {
+      expect(setor.nome).toBeTypeOf('string');
     });
-    test("Deve retornar a data de criação como undefined para setor novo", () => {
+    test('Deve retornar a data de criação como undefined para setor novo', () => {
       // Um setor criado em memória, antes de ir ao banco, não tem data oficial
-      expect(setor.criado_em).toBeUndefined();
+      expect(setor.criadoEm).toBeUndefined();
     });
-    test("Deve retornar a data de alteração", () => {
-      expect(setor.alterado_em).toBeUndefined();
+    test('Deve retornar a data de alteração', () => {
+      expect(setor.alteradoEm).toBeUndefined();
     });
-    test("Deve retornar a data de exclusão", () => {
-      expect(setor.excluido_em).toBeUndefined();
+    test('Deve retornar a data de exclusão', () => {
+      expect(setor.excluidoEm).toBeUndefined();
     });
   });
 
-  describe(".atualizar", () => {
-    test("Deve atualizar um setor", () => {
+  describe('.atualizar', () => {
+    test('Deve atualizar um setor', () => {
       const input = {
-        nome: "Novo nome Setor",
+        nome: 'Novo nome Setor',
       };
 
       const setorAtualizado = setor.atualizar(input);
       expect(setorAtualizado).toBeInstanceOf(Setor);
     });
 
-    test("Deve dar erro ao não informar um nome", () => {
+    test('Deve dar erro ao não informar um nome', () => {
       const input = {};
 
       expect(() => setor.atualizar(input)).toThrow(
-        "Erro ao atualizar setor: nome deve ser fornecido.",
+        'Erro ao atualizar setor: nome deve ser fornecido.',
       );
     });
   });
 
-  describe(".excluir", () => {
-    test("Deve excluir um setor", () => {
+  describe('.excluir', () => {
+    test('Deve excluir um setor', () => {
       setor.excluir();
-      expect(setor.excluido_em).toBeInstanceOf(Date);
+      expect(setor.excluidoEm).toBeInstanceOf(Date);
     });
 
-    test("Deve dar erro se ja tiver excluido", () => {
+    test('Deve dar erro se ja tiver excluido', () => {
       setor.excluir();
 
       expect(() => setor.excluir()).toThrow(
-        "Erro ao remove setor: o mesmo já se encontra excluído.",
+        'Erro ao remove setor: o mesmo já se encontra excluído.',
       );
     });
   });
 
-  describe(".reativar", () => {
-    test("Deve reativar um setor com sucesso", () => {
+  describe('.reativar', () => {
+    test('Deve reativar um setor com sucesso', () => {
       setor.excluir();
       setor.reativar();
-      expect(setor.excluido_em).toBeUndefined();
+      expect(setor.excluidoEm).toBeUndefined();
     });
   });
 });
