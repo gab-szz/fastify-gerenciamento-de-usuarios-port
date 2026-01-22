@@ -101,5 +101,10 @@ describe('Setor', () => {
       setor.reativar();
       expect(setor.excluidoEm).toBeUndefined();
     });
+    test('Deve dar erro ao reativar se já estiver ativo', () => {
+      expect(() => setor.reativar()).toThrow(
+        'Erro ao reativar setor: o mesmo já se encontra ativo.',
+      );
+    });
   });
 });
