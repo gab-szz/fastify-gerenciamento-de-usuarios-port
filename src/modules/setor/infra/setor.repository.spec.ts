@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { SetorRepository } from './setor.repository.js';
-import { Setor } from './setor.domain.js';
+import { SetorRepository } from '../repository/setor.repository.js';
+import { Setor } from '../domain/setor.domain.js';
 import type { Repository } from 'typeorm';
 import type { SetorEntity } from './setor.entity.js';
 

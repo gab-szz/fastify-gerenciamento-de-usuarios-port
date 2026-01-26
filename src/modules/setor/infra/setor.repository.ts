@@ -1,7 +1,7 @@
 import type { SetorEntity } from './setor.entity.js';
-import type { Setor } from './setor.domain.js';
+import type { Setor } from '../domain/setor.domain.js';
 import type { Repository } from 'typeorm';
-import { SetorMapper } from './setor.mapper.js';
+import { SetorMapper } from '../domain/setor.mapper.js';
 
 export interface ISetorRepository {
   inserir(setor: Setor): Promise<SetorEntity>;

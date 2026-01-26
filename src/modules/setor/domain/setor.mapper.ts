@@ -1,5 +1,5 @@
 import { Setor } from './setor.domain.js';
-import { SetorEntity } from './setor.entity.js';
+import { SetorEntity } from '../infra/setor.entity.js';
 
 export class SetorMapper {
   constructor() {}
@@ -18,9 +18,9 @@ export class SetorMapper {
     return Setor.hidratar({
       id: entity.id,
       nome: entity.nome,
-      criado_em: entity.criadoEm,
-      alterado_em: entity.alteradoEm,
-      excluido_em: entity.excluidoEm,
+      criadoEm: entity.criadoEm,
+      alteradoEm: entity.alteradoEm,
+      excluidoEm: entity.excluidoEm,
     });
   }
 }
