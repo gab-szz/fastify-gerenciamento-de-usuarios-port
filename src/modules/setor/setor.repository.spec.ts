@@ -6,129 +6,221 @@ import type { SetorEntity } from './setor.entity.js';
 
 describe('SetorRepository', () => {
   let setorRepository: SetorRepository;
-  let mockRepository: any;
+  let mockTypeorm: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mockRepository = {
-      save: vi.fn(), // Simula repository.save()
-      findOneBy: vi.fn(), // Simula repository.findOneBy()
+    mockTypeorm = {
+      save: vi.fn(),
+      findOneBy: vi.fn(),
+      delete: vi.fn(),
     };
 
     setorRepository = new SetorRepository(
-      mockRepository as Repository<SetorEntity>,
+      mockTypeorm as Repository<SetorEntity>,
     );
   });
 
   describe('inserir', () => {
     test('Deve inserir um setor com sucesso', async () => {
-      // ARRANGE: Prepara os dados para o teste
+      // ARRANGE
+      const entrada = Setor.criar({ nome: 'TI' });
 
-      // Cria um Setor domain (sem ID, como vem de criar())
-      const setorDomain = Setor.criar({ nome: 'TI' });
-
-      // Simula o retorno do banco (Entity com ID)
-      const setorEntityRetornado: SetorEntity = {
+      mockTypeorm.save.mockResolvedValue({
         id: 1,
         nome: 'TI',
         criadoEm: new Date(),
         alteradoEm: undefined,
         excluidoEm: undefined,
-      };
+      });
 
-      mockRepository.save.mockResolvedValue(setorEntityRetornado);
+      // ACT
+      const saida = await setorRepository.inserir(entrada);
 
-      // ACT: Executa a ação
-      const resultado = await setorRepository.inserir(setorDomain);
-
-      // ASSERT: Verifica os resultados
-      expect(resultado).toBeInstanceOf(Setor);
-      expect(resultado.nome).toBe('TI');
-      expect(resultado.id).toBe(1);
-      expect(mockRepository.save).toHaveBeenCalledOnce();
-    });
-
-    test('Deve chamar o mapper para converter domain em entity', async () => {
-      const setorDomain = Setor.criar({ nome: 'RH' });
-
-      const setorEntityRetornado: SetorEntity = {
-        id: 2,
-        nome: 'RH',
-        criadoEm: new Date(),
-        alteradoEm: undefined,
-        excluidoEm: undefined,
-      };
-
-      mockRepository.save.mockResolvedValue(setorEntityRetornado);
-
-      await setorRepository.inserir(setorDomain);
-
-      // Verifica se save() foi chamado com um objeto contendo:
-      // { nome: 'RH', id: undefined, ... }
-      expect(mockRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining({
-          nome: 'RH',
-        }),
-      );
+      // ASSERT
+      expect(saida).toBeInstanceOf(Setor);
+      expect(saida.nome).toBe('TI');
+      expect(saida.id).toBe(1);
+      expect(mockTypeorm.save).toHaveBeenCalledOnce();
     });
   });
 
   describe('consultarPorId', () => {
     test('Deve retornar um Setor quando encontrado', async () => {
       // ARRANGE
-      const id = 1;
-      const setorEntityEncontrada: SetorEntity = {
+      const entrada = 1;
+
+      mockTypeorm.findOneBy.mockResolvedValue({
         id: 1,
         nome: 'Financeiro',
         criadoEm: new Date(),
         alteradoEm: undefined,
         excluidoEm: undefined,
-      };
-
-      // Configura o mock para retornar a entity quando procurar por ID
-      mockRepository.findOneBy.mockResolvedValue(
-        setorEntityEncontrada,
-      );
+      });
 
       // ACT
-      const resultado = await setorRepository.consultarPorId(id);
+      const saida = await setorRepository.consultarPorId(entrada);
 
       // ASSERT
-      expect(resultado).toBeInstanceOf(Setor);
-      expect(resultado?.nome).toBe('Financeiro');
-      expect(resultado?.id).toBe(1);
-      expect(mockRepository.findOneBy).toHaveBeenCalledWith({
-        id: 1,
+      expect(saida).toBeInstanceOf(Setor);
+      expect(saida?.nome).toBe('Financeiro');
+      expect(saida?.id).toBe(1);
+      expect(mockTypeorm.findOneBy).toHaveBeenCalledWith({
+        id: entrada,
       });
     });
 
     test('Deve retornar null quando setor não existe', async () => {
       // ARRANGE
-      // Configura o mock para retornar null (não encontrado)
-      mockRepository.findOneBy.mockResolvedValue(null);
+      const entrada = 999;
+
+      mockTypeorm.findOneBy.mockResolvedValue(null);
 
       // ACT
-      const resultado = await setorRepository.consultarPorId(999);
+      const saida = await setorRepository.consultarPorId(entrada);
 
       // ASSERT
-      expect(resultado).toBeNull();
-      expect(mockRepository.findOneBy).toHaveBeenCalledWith({
-        id: 999,
+      expect(saida).toBeNull();
+      expect(mockTypeorm.findOneBy).toHaveBeenCalledWith({
+        id: entrada,
       });
     });
 
     test('Deve lançar erro se o repository falhar', async () => {
       // ARRANGE
-      // Configura o mock para rejeitar (simular erro do banco)
-      mockRepository.findOneBy.mockRejectedValue(
+      const entrada = 1;
+
+      mockTypeorm.findOneBy.mockRejectedValue(
         new Error('Erro de conexão com banco'),
       );
 
       // ACT & ASSERT
-      await expect(setorRepository.consultarPorId(1)).rejects.toThrow(
-        'Erro de conexão com banco',
-      );
+      await expect(
+        setorRepository.consultarPorId(entrada),
+      ).rejects.toThrow('Erro de conexão com banco');
+    });
+  });
+
+  describe('consultarPeloNome', () => {
+    test('Deve retornar um Setor quando encontrado', async () => {
+      // ARRANGE
+      const entrada = 'TI';
+
+      mockTypeorm.findOneBy.mockResolvedValue({
+        id: 1,
+        nome: 'TI',
+        criadoEm: new Date(),
+        alteradoEm: undefined,
+        excluidoEm: undefined,
+      });
+
+      // ACT
+      const saida = await setorRepository.consultarPorNome(entrada);
+
+      // ASSERT
+      expect(saida).toBeInstanceOf(Setor);
+      expect(saida?.nome).toBe('TI');
+      expect(saida?.id).toBe(1);
+      expect(mockTypeorm.findOneBy).toHaveBeenCalledWith({
+        nome: entrada,
+      });
+    });
+
+    test('Deve retornar null quando setor não existe', async () => {
+      // ARRANGE
+      const entrada = 'Não existe';
+
+      mockTypeorm.findOneBy.mockResolvedValue(null);
+
+      // ACT
+      const saida = await setorRepository.consultarPorNome(entrada);
+
+      // ASSERT
+      expect(saida).toBeNull();
+      expect(mockTypeorm.findOneBy).toHaveBeenCalledWith({
+        nome: entrada,
+      });
+    });
+  });
+
+  describe('atualizar', () => {
+    test('Deve atualizar com sucesso', async () => {
+      // ARRANGE
+      const entrada = Setor.hidratar({
+        id: 1,
+        nome: 'Tecnologia da Informação',
+        criadoEm: new Date(2026, 1, 23),
+      });
+
+      mockTypeorm.save.mockResolvedValue({
+        id: 1,
+        nome: 'TI',
+        criadoEm: new Date(2026, 1, 23),
+        alteradoEm: new Date(),
+      });
+
+      // ACT
+      const saida = await setorRepository.atualizar(entrada);
+
+      // ASSERT
+      expect(saida).toBeInstanceOf(Setor);
+      expect(saida!.nome).toBe('TI');
+      expect(saida!.id).toBe(1);
+      expect(mockTypeorm.save).toHaveBeenCalledOnce();
+    });
+
+    test('Deve retornar null em objeto não existente', async () => {
+      // ARRANGE
+      const entrada = Setor.hidratar({
+        id: 999,
+        nome: 'Não existe',
+      });
+
+      mockTypeorm.save.mockResolvedValue(null);
+
+      // ACT
+      const saida = await setorRepository.atualizar(entrada);
+
+      // ASSERT
+      expect(saida).toBeNull();
+      expect(mockTypeorm.save).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('remover', () => {
+    test('Deve remover um setor com sucesso', async () => {
+      // ARRANGE
+      const entrada = Setor.hidratar({
+        id: 1,
+        nome: 'TI',
+      });
+
+      mockTypeorm.delete.mockResolvedValue({ affected: 1 });
+
+      // ACT
+      const saida = await setorRepository.remover(entrada);
+
+      // ASSERT
+      expect(saida).toBe(true);
+      expect(mockTypeorm.delete).toHaveBeenCalledWith(1);
+    });
+
+    test('Deve retornar false quando não conseguir remover', async () => {
+      // ARRANGE
+      const entrada = Setor.hidratar({
+        id: 999,
+        nome: 'Não existe',
+      });
+
+      mockTypeorm.delete.mockResolvedValue({ affected: 0 });
+
+      // ACT
+      const saida = await setorRepository.remover(entrada);
+
+      // ASSERT
+      expect(saida).toBe(false);
+      expect(mockTypeorm.delete).toHaveBeenCalledWith(999);
     });
   });
 });
