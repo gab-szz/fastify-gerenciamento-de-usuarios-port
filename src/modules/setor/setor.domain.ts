@@ -22,9 +22,9 @@ export class Setor {
 
   private constructor(input: setorType) {
     this._nome = input.nome;
-    this._alteradoEm = input.alterado_em;
-    this._excluidoEm = input.excluido_em;
-    this._criadoEm = input.criado_em;
+    this._alteradoEm = input.alteradoEm;
+    this._excluidoEm = input.excluidoEm;
+    this._criadoEm = input.criadoEm;
     if (input.id) {
       this.id = input.id;
     }
