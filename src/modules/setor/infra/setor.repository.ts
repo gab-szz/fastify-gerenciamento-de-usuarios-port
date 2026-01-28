@@ -4,7 +4,7 @@ import type { Repository } from 'typeorm';
 import { SetorMapper } from '../domain/setor.mapper.js';
 
 export interface ISetorRepository {
-  inserir(setor: Setor): Promise<SetorEntity>;
+  inserir(setor: Setor): Promise<Setor>;
   consultarPorId(id: number): Promise<Setor | null>;
   consultarPorNome(nome: string): Promise<Setor | null>;
   atualizar(setor: Setor): Promise<Setor | null>;
