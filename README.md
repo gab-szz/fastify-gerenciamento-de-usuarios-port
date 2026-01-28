@@ -93,7 +93,7 @@ Iniciando pela entidade de Setor, que é uma entidade básica do sistema e neces
 ```mermaid
 flowchart LR
  subgraph subGraph0["Módulo Setor"]
-        UC1["UC01 - Cadastrar Setor"]
+        UC1["UC01 - Criar Setor"]
         UC2["UC02 - Consultar Setores"]
         UC3["UC03 - Atualizar Dados do Setor"]
         UC4["UC04 - Desativar Setor"]
