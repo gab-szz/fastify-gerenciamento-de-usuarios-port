@@ -65,4 +65,19 @@ describe('CriarSetorUseCase', () => {
     expect(saida.nome).toBe('Tecnologia da Informação');
     expect(saida.id).toBe(1);
   });
+
+  test('Deve retornar erro ao criar um setor com nome já existente', async () => {
+    //ARRANGE
+    const entrada = { nome: 'Tecnologia da Informação' };
+    const useCase = new CriarSetorUseCase(mockRepository);
+
+    (mockRepository.consultarPorNome as Mock).mockResolvedValue({
+      nome: 'Tecnologia da Informação',
+    } as Setor);
+
+    //ACT & ASSERT
+    await expect(useCase.executar(entrada)).rejects.toThrow(
+      'Já existe um Setor cadastrado com esse nome',
+    );
+  });
 });
