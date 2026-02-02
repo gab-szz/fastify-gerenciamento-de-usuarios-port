@@ -1,11 +1,4 @@
-import {
-  beforeEach,
-  describe,
-  expect,
-  test,
-  vi,
-  type Mock,
-} from 'vitest';
+import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
 import type { ISetorRepository } from '../infra/setor.repository.js';
 import { CriarSetorUseCase } from './criar-setor.use-case.js';
 import { Setor } from '../domain/setor.domain.js';
@@ -76,8 +69,6 @@ describe('CriarSetorUseCase', () => {
     } as Setor);
 
     //ACT & ASSERT
-    await expect(useCase.executar(entrada)).rejects.toThrow(
-      'Já existe um Setor cadastrado com esse nome',
-    );
+    await expect(useCase.executar(entrada)).rejects.toThrow('Already exists');
   });
 });

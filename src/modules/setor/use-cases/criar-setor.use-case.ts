@@ -1,3 +1,4 @@
+import { ErroRegraNegocio } from '../../../errors/ErroRegraNegocio.error.js';
 import { Setor } from '../domain/setor.domain.js';
 import type { ISetorRepository } from '../infra/setor.repository.js';
 import { SetorValidator } from '../services/setor.validador.js';
@@ -20,7 +21,7 @@ export class CriarSetorUseCase {
 
   private async _validarSeSetorExiste(nome: string) {
     if (await this.validador.validarSeSetorExiste(nome)) {
-      throw new Error('Já existe um Setor cadastrado com esse nome');
+      throw new ErroRegraNegocio('Already exists');
     }
   }
 }
