@@ -1,9 +1,10 @@
-import { DataSource } from "typeorm";
-import { env } from "../config/env.js";
-import logger from "../logger/index.js";
+import { DataSource } from 'typeorm';
+import { env } from '../config/env.js';
+import logger from '../logger/index.js';
+import { SetorEntity } from '../modules/setor/infra/setor.entity.js';
 
 export const fonteDeDados = new DataSource({
-  type: "postgres",
+  type: 'postgres',
   host: env.ENDERECO_BD,
   port: env.PORTA_BD,
   username: env.USUARIO_BD,
@@ -11,31 +12,31 @@ export const fonteDeDados = new DataSource({
   database: env.NOME_BD,
   synchronize: false,
   logging: false,
-  entities: [],
-  migrations: ["src/database/migrations/*.ts"],
+  entities: [SetorEntity],
+  migrations: ['src/database/migrations/*.ts'],
   subscribers: [],
   ssl: { rejectUnauthorized: false }, // Necessário para bancos na AWS
 });
 
 export async function inicializarConexaoComFonteDeDados() {
-  fonteDeDados
+  await fonteDeDados
     .initialize()
     .then(() => {
-      logger.info("Fonte de Dados inicializada!");
+      logger.info('Fonte de Dados inicializada!');
       logger.info(`Aplicação rodando na porta ${env.PORTA}!`);
     })
     .catch((err) => {
-      logger.error("Ocorreu um erro ao inicializar a fonte de dados", err);
+      logger.error('Ocorreu um erro ao inicializar a fonte de dados', err);
     });
 }
 
 export async function destruirConexaoComFonteDeDados() {
-  fonteDeDados
+  await fonteDeDados
     .destroy()
     .then(() => {
-      logger.info("Conexão com Fonte de Dados encerrada!");
+      logger.info('Conexão com Fonte de Dados encerrada!');
     })
     .catch((err) => {
-      logger.error("Ocorreu um erro ao encerrar a conexão fonte de dados", err);
+      logger.error('Ocorreu um erro ao encerrar a conexão fonte de dados', err);
     });
 }
