@@ -7,6 +7,7 @@ export interface ISetorRepository {
   inserir(setor: Setor): Promise<Setor>;
   consultarPorId(id: number): Promise<Setor | null>;
   consultarPorNome(nome: string): Promise<Setor | null>;
+  consultarTodos(): Promise<Setor[]>;
   atualizar(setor: Setor): Promise<Setor | null>;
   remover(setor: Setor): Promise<boolean>;
 }
@@ -20,9 +21,18 @@ export class SetorRepository implements ISetorRepository {
 
   async inserir(setor: Setor): Promise<Setor> {
     const dados = SetorMapper.domainParaEntity(setor);
-    return SetorMapper.entityParaDomain(
-      await this.repository.save(dados),
-    );
+    return SetorMapper.entityParaDomain(await this.repository.save(dados));
+  }
+
+  async consultarTodos(): Promise<Setor[]> {
+    const entities = await this.repository.find();
+    let setores: Setor[] = [];
+    if (entities) {
+      entities.forEach((setor) =>
+        setores.push(SetorMapper.entityParaDomain(setor)),
+      );
+    }
+    return setores;
   }
 
   async consultarPorId(id: number): Promise<Setor | null> {
@@ -38,9 +48,7 @@ export class SetorRepository implements ISetorRepository {
   async atualizar(setor: Setor): Promise<Setor | null> {
     const entityParaSalvar = SetorMapper.domainParaEntity(setor);
     const entitySalva = await this.repository.save(entityParaSalvar);
-    return entitySalva
-      ? SetorMapper.entityParaDomain(entitySalva)
-      : null;
+    return entitySalva ? SetorMapper.entityParaDomain(entitySalva) : null;
   }
 
   async remover(setor: Setor): Promise<boolean> {
