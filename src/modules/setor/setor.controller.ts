@@ -10,4 +10,9 @@ export class SetorController {
     const setor = await request.setorUseCases.criar.executar(input);
     return reply.status(201).send(setor);
   }
+
+  async consultar(request: FastifyRequest, reply: FastifyReply) {
+    const setores = await request.setorUseCases.consultar.todos();
+    return reply.status(200).send(setores);
+  }
 }
