@@ -11,32 +11,35 @@ export const fonteDeDados = new DataSource({
   password: env.SENHA_BD,
   database: env.NOME_BD,
   synchronize: false,
-  logging: false,
+  logging: true, // ✅ Ativar logging para debug
   entities: [SetorEntity],
   migrations: ['src/database/migrations/*.ts'],
   subscribers: [],
-  ssl: { rejectUnauthorized: false }, // Necessário para bancos na AWS
+  ssl: { rejectUnauthorized: false },
+  connectTimeoutMS: 10000, // ✅ Timeout de 10 segundos
+  extra: {
+    connectionTimeoutMillis: 10000,
+  },
 });
 
 export async function inicializarConexaoComFonteDeDados() {
-  await fonteDeDados
-    .initialize()
-    .then(() => {
-      logger.info('Fonte de Dados inicializada!');
-      logger.info(`Aplicação rodando na porta ${env.PORTA}!`);
-    })
-    .catch((err) => {
-      logger.error('Ocorreu um erro ao inicializar a fonte de dados', err);
-    });
+  try {
+    logger.info('Iniciando fonte de dados...');
+    await fonteDeDados.initialize();
+
+    logger.info(`Aplicação rodando na porta ${env.PORTA}!`);
+  } catch (err) {
+    logger.error('Ocorreu um erro ao inicializar a fonte de dados');
+    throw err;
+  }
 }
 
 export async function destruirConexaoComFonteDeDados() {
-  await fonteDeDados
-    .destroy()
-    .then(() => {
-      logger.info('Conexão com Fonte de Dados encerrada!');
-    })
-    .catch((err) => {
-      logger.error('Ocorreu um erro ao encerrar a conexão fonte de dados', err);
-    });
+  try {
+    await fonteDeDados.destroy();
+    logger.info('Conexão com Fonte de Dados encerrada!');
+  } catch (err) {
+    logger.error('Ocorreu um erro ao encerrar a conexão fonte de dados');
+    throw err;
+  }
 }
