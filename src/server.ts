@@ -10,7 +10,7 @@ import { errorHandler } from './errors/error.handler.js';
 
 const app = fastify();
 
-app.addHook('onReady', async () => inicializarConexaoComFonteDeDados());
+await inicializarConexaoComFonteDeDados();
 
 app.register(setorPlugin);
 app.register(setorRoutes);
@@ -19,4 +19,4 @@ app.setErrorHandler(errorHandler);
 
 app.addHook('onClose', async () => destruirConexaoComFonteDeDados());
 
-app.listen({ port: env.PORTA });
+await app.listen({ port: env.PORTA });
