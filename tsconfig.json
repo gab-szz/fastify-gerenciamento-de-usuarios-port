@@ -30,7 +30,7 @@
 
     // Style Options
     "noImplicitReturns": true,
-    "noImplicitAny": null,
+    "noImplicitAny": true,
     // "noImplicitOverride": true,
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
