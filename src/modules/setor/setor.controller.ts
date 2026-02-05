@@ -4,8 +4,8 @@ import {
   consultarSetorPorIdSchema,
   consultarSetorPorNomeSchema,
   criarSetorSchema,
+  excluirSetorSchema,
 } from './setor.type.js';
-import { ZodError } from 'zod';
 
 export class SetorController {
   constructor() {}
@@ -34,13 +34,16 @@ export class SetorController {
   }
 
   async atualizar(request: FastifyRequest, reply: FastifyReply) {
-    const input = atualizarSetorSchema.parse(request.query);
+    const input = atualizarSetorSchema.parse({
+      id: (request.params as any).id,
+      nome: (request.body as any).nome,
+    });
     const setor = await request.setorUseCases.atualizar.executar(input);
     return reply.status(200).send(setor);
   }
 
   async excluir(request: FastifyRequest, reply: FastifyReply) {
-    const input = consultarSetorPorIdSchema.parse(request.query);
+    const input = excluirSetorSchema.parse(request.params);
     const setor = await request.setorUseCases.excluir.executar(input.id);
     return reply.status(200).send(setor);
   }
