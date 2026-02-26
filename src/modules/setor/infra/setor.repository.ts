@@ -52,7 +52,7 @@ export class SetorRepository implements ISetorRepository {
   }
 
   async remover(setor: Setor): Promise<boolean> {
-    const result = await this.repository.delete(setor.id!);
-    return result.affected ? true : false;
+    const resultado = await this.repository.delete(setor.id!);
+    return resultado.affected ? true : false;
   }
 }
