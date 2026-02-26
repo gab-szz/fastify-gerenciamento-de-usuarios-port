@@ -32,14 +32,10 @@ export class Setor {
 
   static criar(input: setorType): Setor {
     if (input.id) {
-      throw new Error(
-        'Erro ao criar setor: ID não deve ser fornecido.',
-      );
+      throw new Error('Erro ao criar setor: ID não deve ser fornecido.');
     }
     if (!input.nome) {
-      throw new Error(
-        'Erro ao criar setor: nome deve ser fornecido.',
-      );
+      throw new Error('Erro ao criar setor: nome deve ser fornecido.');
     }
 
     return new Setor(input);
@@ -47,18 +43,14 @@ export class Setor {
 
   static hidratar(input: setorType): Setor {
     if (!input.id) {
-      throw new Error(
-        'Erro ao hidratar setor: ID deve ser fornecido.',
-      );
+      throw new Error('Erro ao hidratar setor: ID deve ser fornecido.');
     }
     return new Setor(input);
   }
 
   atualizar(input: Partial<setorType>) {
     if (!input.nome) {
-      throw new Error(
-        'Erro ao atualizar setor: nome deve ser fornecido.',
-      );
+      throw new Error('Erro ao atualizar setor: nome deve ser fornecido.');
     }
     this._nome = input.nome;
     this._alteradoEm = new Date();
@@ -67,9 +59,7 @@ export class Setor {
 
   excluir() {
     if (this._excluidoEm) {
-      throw new Error(
-        'Erro ao remove setor: o mesmo já se encontra excluído.',
-      );
+      throw new Error('Erro ao remove setor: o mesmo já se encontra excluído.');
     }
     this._excluidoEm = new Date();
     return this;
@@ -77,11 +67,19 @@ export class Setor {
 
   reativar() {
     if (!this._excluidoEm) {
-      throw new Error(
-        'Erro ao reativar setor: o mesmo já se encontra ativo.',
-      );
+      throw new Error('Erro ao reativar setor: o mesmo já se encontra ativo.');
     }
     this._excluidoEm = undefined;
     return this;
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      nome: this.nome,
+      criadoEm: this.criadoEm,
+      alteradoEm: this.alteradoEm,
+      excluidoEm: this.excluidoEm,
+    };
   }
 }
