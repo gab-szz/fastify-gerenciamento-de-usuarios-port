@@ -8,6 +8,8 @@ import {
 import setorPlugin from './modules/setor/setor.plugin.js';
 import { setorRoutes } from './modules/setor/setor.routes.js';
 import { errorHandler } from './errors/error.handler.js';
+import enderecoPlugin from './modules/endereco/endereco.plugin.js';
+import { enderecoRoutes } from './modules/endereco/endereco.routes.js';
 
 const app = fastify();
 
@@ -21,6 +23,9 @@ await inicializarConexaoComFonteDeDados();
 
 app.register(setorPlugin);
 app.register(setorRoutes);
+
+app.register(enderecoPlugin);
+app.register(enderecoRoutes);
 
 app.setErrorHandler(errorHandler);
 
