@@ -1,22 +1,19 @@
 import type { Repository } from 'typeorm';
 import type { Endereco } from '../domain/endereco.domain.js';
 import { EnderecoMapper } from '../domain/endereco.mapper.js';
+import type { EnderecoEntity } from './endereco.entity.js';
 
 export interface IEnderecoRepository {
   inserir(endereco: Endereco): Promise<Endereco>;
-  consultarPorId(id: number): Promise<Endereco | null>;
-  consultarPorNome(nome: string): Promise<Endereco | null>;
-  consultarTodos(): Promise<Endereco[]>;
-  atualizar(endereco: Endereco): Promise<Endereco | null>;
-  remover(endereco: Endereco): Promise<boolean>;
+  //consultarPorId(id: number): Promise<Endereco | null>;
+  //consultarPorNome(nome: string): Promise<Endereco | null>;
+  //consultarTodos(): Promise<Endereco[]>;
+  //atualizar(endereco: Endereco): Promise<Endereco | null>;
+  //remover(endereco: Endereco): Promise<boolean>;
 }
 
 export class EnderecoRepository {
-  repository: Repository<Endereco>;
-
-  constructor(repository: Repository<Endereco>) {
-    this.repository = repository;
-  }
+  constructor(private readonly repository: Repository<EnderecoEntity>) {}
 
   async inserir(endereco: Endereco): Promise<Endereco> {
     const dados = EnderecoMapper.domainParaEntity(endereco);
