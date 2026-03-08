@@ -32,6 +32,7 @@ describe('CriarSetorUseCase', () => {
       inserir: vi.fn(),
       consultarPorId: vi.fn(),
       consultarPorNome: vi.fn(),
+      consultarTodos: vi.fn(),
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
@@ -42,13 +43,13 @@ describe('CriarSetorUseCase', () => {
     const entrada = { nome: 'Tecnologia da Informação' };
     const useCase = new CriarSetorUseCase(mockRepository);
 
-    const setorComId = Setor.hidratar({
-      id: 1,
-      nome: 'Tecnologia da Informação',
-    });
-
     (mockRepository.consultarPorNome as Mock).mockResolvedValue(null);
-    (mockRepository.inserir as Mock).mockResolvedValue(setorComId);
+    (mockRepository.inserir as Mock).mockResolvedValue(
+      Setor.hidratar({
+        id: 1,
+        nome: 'Tecnologia da Informação',
+      }),
+    );
 
     //ACT
     const saida = await useCase.executar(entrada);
