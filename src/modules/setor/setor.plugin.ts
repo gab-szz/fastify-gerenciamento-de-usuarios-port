@@ -6,7 +6,7 @@ import { SetorEntity } from './infra/setor.entity.js';
 import { SetorRepository } from './infra/setor.repository.js';
 import { ConsultarSetorUseCases } from './use-cases/consultar-setor.use-case.js';
 import { AtualizarSetorUseCase } from './use-cases/atualizar-setor.use-case.js';
-import { ExcluirSetorUseCase } from './use-cases/remover-setor.use-case.js';
+import { ExcluirSetorUseCase } from './use-cases/excluir-setor.use-case.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
