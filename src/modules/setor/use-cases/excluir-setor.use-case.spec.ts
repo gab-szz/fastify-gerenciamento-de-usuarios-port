@@ -47,4 +47,31 @@ describe('RemoverSetorUseCase', () => {
     expect(saida).toBeInstanceOf(Setor);
     expect(saida?.excluidoEm).toBeDefined();
   });
+
+  test('Deve retornar erro: Setor já removido', async () => {
+    //ARRANGE
+    const inputId = 1;
+    const useCase = new ExcluirSetorUseCase(mockRepository);
+
+    (mockRepository.consultarPorId as Mock).mockResolvedValue(
+      Setor.hidratar({
+        id: 1,
+        nome: 'Tecnologia da Informação',
+        excluidoEm: new Date(),
+      }),
+    );
+    (mockRepository.atualizar as Mock).mockResolvedValue(
+      Setor.hidratar({
+        id: 1,
+        nome: 'Tecnologia da Informação',
+        excluidoEm: new Date(),
+      }),
+    );
+    //TODO -> Mockar retorno do objeto setor com os dados (data de exclusão)
+
+    //ACT/ASSERT
+    await expect(useCase.executar(inputId)).rejects.toThrow(
+      'Erro ao remove setor: o mesmo já se encontra excluído.',
+    );
+  });
 });
