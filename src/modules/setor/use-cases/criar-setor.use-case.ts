@@ -1,13 +1,10 @@
 import { ErroRegraNegocio } from '../../../errors/ErroRegraNegocio.error.js';
 import { Setor } from '../domain/setor.domain.js';
 import type { ISetorRepository } from '../infra/setor.repository.js';
-import { SetorValidator } from '../services/setor.validador.js';
 import type { criarSetorDTO } from '../setor.type.js';
 
 export class CriarSetorUseCase {
-  validador: SetorValidator;
   constructor(private readonly repository: ISetorRepository) {
-    this.validador = new SetorValidator(repository);
     this.repository = repository;
   }
 
@@ -20,7 +17,7 @@ export class CriarSetorUseCase {
   }
 
   private async _validarSeSetorExiste(nome: string) {
-    if (await this.validador.validarSeSetorExiste(nome)) {
+    if (await this.repository.consultarPorNome(nome)) {
       throw new ErroRegraNegocio('Already exists');
     }
   }
