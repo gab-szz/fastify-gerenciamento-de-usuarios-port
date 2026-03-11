@@ -82,6 +82,22 @@ direction TB
       +reativar()
     }
 
+    class Endereco {
+	    +int id
+	    +String rua
+      +String cidade
+      +String estado
+      +String cep
+      +int criado_em
+	    +String alterado_em
+      +int excluido_em
+	    +criar()
+      +hidratar()
+	    +atualizar()
+      +excluir()
+      +reativar()
+    }
+
 ```
 
 # Diagramas de Casos de Uso
