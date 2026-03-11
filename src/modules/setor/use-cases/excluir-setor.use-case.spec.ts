@@ -74,4 +74,15 @@ describe('RemoverSetorUseCase', () => {
       'Erro ao remove setor: o mesmo já se encontra excluído.',
     );
   });
+
+  test('Deve dar erro quando setor não existir', async () => {
+    //ARRANGE
+    const entrada = 1;
+    const useCase = new ExcluirSetorUseCase(mockRepository);
+
+    (mockRepository.consultarPorId as Mock).mockResolvedValue(null);
+
+    //ACT & ASSERT
+    await expect(useCase.executar(entrada)).rejects.toThrow('Not exists');
+  });
 });

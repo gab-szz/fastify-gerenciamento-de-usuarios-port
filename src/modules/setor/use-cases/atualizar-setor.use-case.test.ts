@@ -1,5 +1,7 @@
-import { beforeEach, describe, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
 import type { ISetorRepository } from '../infra/setor.repository.js';
+import { AtualizarSetorUseCase } from './atualizar-setor.use-case.js';
+import { Setor } from '../domain/setor.domain.js';
 
 describe('group', () => {
   let mockRepository: ISetorRepository;
@@ -17,5 +19,41 @@ describe('group', () => {
     };
   });
 
-  test('Deve atualizar um setor com sucesso', () => {});
+  test('Deve atualizar um setor com sucesso', async () => {
+    //ARRANGE
+    const entrada = { id: 1, nome: 'Recursos Humanos' };
+    const useCase = new AtualizarSetorUseCase(mockRepository);
+
+    (mockRepository.consultarPorId as Mock).mockResolvedValue(
+      Setor.hidratar({
+        id: 1,
+        nome: 'Recursos Humanos',
+      }),
+    );
+    (mockRepository.atualizar as Mock).mockResolvedValue(
+      Setor.hidratar({
+        id: 1,
+        nome: 'Tecnologia da Informação',
+      }),
+    );
+
+    //ACT
+    const saida = await useCase.executar(entrada);
+
+    //ASSERT
+    expect(saida).toBeInstanceOf(Setor);
+    expect(saida!.nome).toBe('Tecnologia da Informação');
+    expect(saida!.id).toBe(1);
+  });
+
+  test('Deve dar erro quando setor não existir', async () => {
+    //ARRANGE
+    const entrada = { id: 1, nome: 'Recursos Humanos' };
+    const useCase = new AtualizarSetorUseCase(mockRepository);
+
+    (mockRepository.consultarPorId as Mock).mockResolvedValue(null);
+
+    //ACT & ASSERT
+    await expect(useCase.executar(entrada)).rejects.toThrow('Not exists');
+  });
 });
