@@ -3,6 +3,7 @@ import type { enderecoType } from '../endereco.type.js';
 export class Endereco {
   readonly id?: number;
   private _rua!: string;
+  private _bairro!: string;
   private _cidade!: string;
   private _estado!: string;
   private _cep!: string;
@@ -12,6 +13,9 @@ export class Endereco {
 
   get rua(): string {
     return this._rua;
+  }
+  get bairro(): string {
+    return this._bairro;
   }
   get cidade(): string {
     return this._cidade;
@@ -34,6 +38,7 @@ export class Endereco {
 
   private constructor(input: enderecoType) {
     this._rua = input.rua;
+    this._bairro = input.bairro;
     this._cidade = input.cidade;
     this._estado = input.estado;
     this._cep = input.cep;
@@ -58,7 +63,13 @@ export class Endereco {
 
   atualizar(input: Partial<enderecoType>): Endereco {
     Endereco.validarCamposObrigatorios(input as enderecoType, true);
-    return new Endereco(input as enderecoType);
+    this._rua = input.rua!;
+    this._bairro = input.bairro!;
+    this._cidade = input.cidade!;
+    this._estado = input.estado!;
+    this._cep = input.cep!;
+    this._alteradoEm = new Date();
+    return this;
   }
 
   excluir(): Endereco {
@@ -87,16 +98,33 @@ export class Endereco {
       );
     }
     if (!input.rua) {
-      throw new Error('Erro ao criar endereço: rua deve ser fornecida.');
+      throw new Error('Validação de endereço: rua deve ser fornecida.');
+    }
+    if (!input.bairro) {
+      throw new Error('Validação de endereço: bairro deve ser fornecido.');
     }
     if (!input.cidade) {
-      throw new Error('Erro ao criar endereço: cidade deve ser fornecida.');
+      throw new Error('Validação de endereço: cidade deve ser fornecida.');
     }
     if (!input.estado) {
-      throw new Error('Erro ao criar endereço: estado deve ser fornecido.');
+      throw new Error('Validação de endereço: estado deve ser fornecido.');
     }
     if (!input.cep) {
-      throw new Error('Erro ao criar endereço: cep deve ser fornecido.');
+      throw new Error('Validação de endereço: cep deve ser fornecido.');
     }
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      rua: this._rua,
+      bairro: this._bairro,
+      cidade: this._cidade,
+      estado: this._estado,
+      cep: this._cep,
+      criadoEm: this._criadoEm,
+      alteradoEm: this._alteradoEm,
+      excluidoEm: this._excluidoEm,
+    };
   }
 }

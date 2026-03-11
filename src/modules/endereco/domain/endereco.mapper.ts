@@ -8,6 +8,7 @@ export class EnderecoMapper {
     return {
       id: endereco.id,
       rua: endereco.rua,
+      bairro: endereco.bairro,
       cidade: endereco.cidade,
       estado: endereco.estado,
       cep: endereco.cep,
@@ -21,6 +22,7 @@ export class EnderecoMapper {
     return Endereco.hidratar({
       id: entity.id,
       rua: entity.rua,
+      bairro: entity.bairro,
       cidade: entity.cidade,
       estado: entity.estado,
       cep: entity.cep,

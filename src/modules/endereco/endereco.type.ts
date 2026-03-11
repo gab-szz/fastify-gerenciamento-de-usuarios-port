@@ -4,6 +4,7 @@ import z from 'zod';
 export const enderecoSchema = z.object({
   id: z.coerce.number().optional(),
   rua: z.string().min(3),
+  bairro: z.string().min(3),
   cidade: z.string().min(3),
   estado: z.string().min(2),
   cep: z.string().min(7),
@@ -17,6 +18,7 @@ export const enderecoSchema = z.object({
  */
 export const criarEnderecoSchema = z.object({
   rua: z.string().min(3),
+  bairro: z.string().min(3),
   cidade: z.string().min(3),
   estado: z.string().min(2),
   cep: z.string().min(7),
@@ -29,6 +31,7 @@ export const consultarEnderecoPorIdSchema = z.object({
 export const atualizarEnderecoSchema = z.object({
   id: z.coerce.number(),
   rua: z.string().min(3),
+  bairro: z.string().min(3),
   cidade: z.string().min(3),
   estado: z.string().min(2),
   cep: z.string().min(7),

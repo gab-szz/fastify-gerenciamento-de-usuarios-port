@@ -21,6 +21,14 @@ export class EnderecoEntity {
   rua!: string;
 
   @Column({
+    name: 'bairro',
+    type: 'varchar',
+    length: 30,
+    nullable: false,
+  })
+  bairro!: string;
+
+  @Column({
     name: 'cidade',
     type: 'varchar',
     length: 30,
