@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import { env } from '../config/env.js';
 import logger from '../logger/index.js';
 import { SetorEntity } from '../modules/setor/infra/setor.entity.js';
+import { EnderecoEntity } from '../modules/endereco/infra/endereco.entity.js';
 
 export const fonteDeDados = new DataSource({
   type: 'postgres',
@@ -12,7 +13,7 @@ export const fonteDeDados = new DataSource({
   database: env.NOME_BD,
   synchronize: false,
   logging: true, // ✅ Ativar logging para debug
-  entities: [SetorEntity],
+  entities: [SetorEntity, EnderecoEntity],
   migrations: ['src/database/migrations/*.ts'],
   subscribers: [],
   ssl: { rejectUnauthorized: false },
