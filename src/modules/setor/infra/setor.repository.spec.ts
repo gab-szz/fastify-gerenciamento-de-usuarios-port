@@ -46,6 +46,53 @@ describe('SetorRepository', () => {
     });
   });
 
+  describe('consultarTodos', () => {
+    test('Deve retornar uma lista de setores', async () => {
+      // ARRANGE
+      mockTypeorm.find = vi.fn();
+      mockTypeorm.find.mockResolvedValue([
+        {
+          id: 1,
+          nome: 'TI',
+          criadoEm: new Date(),
+          alteradoEm: undefined,
+          excluidoEm: undefined,
+        },
+        {
+          id: 2,
+          nome: 'Financeiro',
+          criadoEm: new Date(),
+          alteradoEm: undefined,
+          excluidoEm: undefined,
+        },
+      ]);
+
+      // ACT
+      const saida = await setorRepository.consultarTodos();
+
+      // ASSERT
+      expect(saida).toHaveLength(2);
+      expect(saida[0]).toBeInstanceOf(Setor);
+      expect(saida[0]!.nome).toBe('TI');
+      expect(saida[1]).toBeInstanceOf(Setor);
+      expect(saida[1]!.nome).toBe('Financeiro');
+      expect(mockTypeorm.find).toHaveBeenCalledOnce();
+    });
+
+    test('Deve retornar uma lista vazia quando não houver setores', async () => {
+      // ARRANGE
+      mockTypeorm.find = vi.fn();
+      mockTypeorm.find.mockResolvedValue([]);
+
+      // ACT
+      const saida = await setorRepository.consultarTodos();
+
+      // ASSERT
+      expect(saida).toHaveLength(0);
+      expect(mockTypeorm.find).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('consultarPorId', () => {
     test('Deve retornar um Setor quando encontrado', async () => {
       // ARRANGE
@@ -96,9 +143,9 @@ describe('SetorRepository', () => {
       );
 
       // ACT & ASSERT
-      await expect(
-        setorRepository.consultarPorId(entrada),
-      ).rejects.toThrow('Erro de conexão com banco');
+      await expect(setorRepository.consultarPorId(entrada)).rejects.toThrow(
+        'Erro de conexão com banco',
+      );
     });
   });
 
