@@ -5,11 +5,10 @@ import type { EnderecoEntity } from './endereco.entity.js';
 
 export interface IEnderecoRepository {
   inserir(endereco: Endereco): Promise<Endereco>;
-  //consultarPorId(id: number): Promise<Endereco | null>;
-  //consultarPorNome(nome: string): Promise<Endereco | null>;
-  //consultarTodos(): Promise<Endereco[]>;
-  //atualizar(endereco: Endereco): Promise<Endereco | null>;
-  //remover(endereco: Endereco): Promise<boolean>;
+  consultarPorId(id: number): Promise<Endereco | null>;
+  consultarTodos(): Promise<Endereco[]>;
+  atualizar(endereco: Endereco): Promise<Endereco | null>;
+  remover(endereco: Endereco): Promise<boolean>;
 }
 
 export class EnderecoRepository {
