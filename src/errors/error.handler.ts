@@ -10,7 +10,7 @@ export async function errorHandler(
 ) {
   if (error instanceof ZodError) {
     const problemas = error.issues.map((issue) => ({
-      campo: issue.path.join('.') || 'body',
+      field: issue.path.join('.') || 'body',
       message: issue.message,
     }));
     return reply
