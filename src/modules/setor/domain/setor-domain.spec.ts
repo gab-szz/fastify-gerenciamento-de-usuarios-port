@@ -107,4 +107,25 @@ describe('Setor', () => {
       );
     });
   });
+
+  describe('.toJSON', () => {
+    test('Deve retornar um objeto JSON com todos os campos', () => {
+      const setorHidratado = Setor.hidratar({
+        id: 1,
+        nome: 'Financeiro',
+        criadoEm: new Date(2026, 0, 15),
+        alteradoEm: new Date(2026, 0, 20),
+      });
+
+      const json = setorHidratado.toJSON();
+
+      expect(json).toEqual({
+        id: 1,
+        nome: 'Financeiro',
+        criadoEm: setorHidratado.criadoEm,
+        alteradoEm: setorHidratado.alteradoEm,
+        excluidoEm: undefined,
+      });
+    });
+  });
 });

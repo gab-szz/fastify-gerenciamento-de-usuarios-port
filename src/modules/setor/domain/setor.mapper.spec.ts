@@ -4,6 +4,13 @@ import { Setor } from './setor.domain.js';
 import type { SetorEntity } from '../infra/setor.entity.js';
 
 describe('SetorMapper', () => {
+  describe('constructor', () => {
+    test('Deve criar uma instância de SetorMapper', () => {
+      const mapper = new SetorMapper();
+      expect(mapper).toBeInstanceOf(SetorMapper);
+    });
+  });
+
   describe('domainParaEntity', () => {
     test('Deve converter um Setor do domínio para SetorEntity', () => {
       // ARRANGE
@@ -157,12 +164,8 @@ describe('SetorMapper', () => {
       // ASSERT
       expect(setorRecuperado.id).toBe(setorOriginal.id);
       expect(setorRecuperado.nome).toBe(setorOriginal.nome);
-      expect(setorRecuperado.criadoEm).toEqual(
-        setorOriginal.criadoEm,
-      );
-      expect(setorRecuperado.alteradoEm).toEqual(
-        setorOriginal.alteradoEm,
-      );
+      expect(setorRecuperado.criadoEm).toEqual(setorOriginal.criadoEm);
+      expect(setorRecuperado.alteradoEm).toEqual(setorOriginal.alteradoEm);
     });
   });
 });
