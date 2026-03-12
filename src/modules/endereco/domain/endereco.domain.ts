@@ -3,16 +3,21 @@ import type { enderecoType } from '../endereco.type.js';
 export class Endereco {
   readonly id?: number;
   private _rua!: string;
+  private _numero!: string;
   private _bairro!: string;
   private _cidade!: string;
   private _estado!: string;
   private _cep!: string;
+  private _complemento?: string;
   private _criadoEm?: Date | undefined;
   private _alteradoEm?: Date | undefined;
   private _excluidoEm?: Date | undefined;
 
   get rua(): string {
     return this._rua;
+  }
+  get numero(): string {
+    return this._numero;
   }
   get bairro(): string {
     return this._bairro;
@@ -26,6 +31,9 @@ export class Endereco {
   get cep(): string {
     return this._cep;
   }
+  get complemento(): string | undefined {
+    return this._complemento;
+  }
   get criadoEm(): Date | undefined {
     return this._criadoEm;
   }
@@ -38,10 +46,12 @@ export class Endereco {
 
   private constructor(input: enderecoType) {
     this._rua = input.rua;
+    this._numero = input.numero;
     this._bairro = input.bairro;
     this._cidade = input.cidade;
     this._estado = input.estado;
     this._cep = input.cep;
+    this._complemento = input.complemento;
     this._alteradoEm = input.alteradoEm;
     this._excluidoEm = input.excluidoEm;
     this._criadoEm = input.criadoEm;
@@ -64,10 +74,12 @@ export class Endereco {
   atualizar(input: Partial<enderecoType>): Endereco {
     Endereco.validarCamposObrigatorios(input as enderecoType, true);
     this._rua = input.rua!;
+    this._numero = input.numero!;
     this._bairro = input.bairro!;
     this._cidade = input.cidade!;
     this._estado = input.estado!;
     this._cep = input.cep!;
+    this._complemento = input.complemento;
     this._alteradoEm = new Date();
     return this;
   }
@@ -118,10 +130,12 @@ export class Endereco {
     return {
       id: this.id,
       rua: this._rua,
+      numero: this._numero,
       bairro: this._bairro,
       cidade: this._cidade,
       estado: this._estado,
       cep: this._cep,
+      complemento: this._complemento,
       criadoEm: this._criadoEm,
       alteradoEm: this._alteradoEm,
       excluidoEm: this._excluidoEm,

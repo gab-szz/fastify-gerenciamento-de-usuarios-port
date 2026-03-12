@@ -20,6 +20,12 @@ export class CriarTabelaEndereco1773194418375 implements MigrationInterface {
             length: '30',
           },
           {
+            name: 'numero',
+            type: 'varchar',
+            isNullable: false,
+            length: '10',
+          },
+          {
             name: 'bairro',
             type: 'varchar',
             isNullable: false,
@@ -42,6 +48,12 @@ export class CriarTabelaEndereco1773194418375 implements MigrationInterface {
             type: 'varchar',
             isNullable: false,
             length: '14',
+          },
+          {
+            name: 'complemento',
+            type: 'varchar',
+            isNullable: false,
+            length: '50',
           },
           {
             name: 'criado_em',

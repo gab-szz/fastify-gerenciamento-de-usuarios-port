@@ -21,6 +21,14 @@ export class EnderecoEntity {
   rua!: string;
 
   @Column({
+    name: 'numero',
+    type: 'varchar',
+    length: 10,
+    nullable: false,
+  })
+  numero!: string;
+
+  @Column({
     name: 'bairro',
     type: 'varchar',
     length: 30,
@@ -51,6 +59,14 @@ export class EnderecoEntity {
     nullable: false,
   })
   cep!: string;
+
+  @Column({
+    name: 'complemento',
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
+  complemento!: string;
 
   @CreateDateColumn({
     name: 'criado_em',
