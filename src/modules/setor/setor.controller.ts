@@ -1,11 +1,11 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { criarSetorSchema } from './dtos/criar-setor.dto.js';
 import {
-  atualizarSetorSchema,
   consultarSetorPorIdSchema,
   consultarSetorPorNomeSchema,
-  criarSetorSchema,
-  excluirSetorSchema,
-} from './setor.type.js';
+} from './dtos/consultar-setor.dto.js';
+import { atualizarSetorSchema } from './dtos/atualizar-setor.dto.js';
+import { excluirSetorSchema } from './dtos/excluir-setor.dto.js';
 
 export class SetorController {
   constructor() {}

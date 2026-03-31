@@ -1,7 +1,7 @@
 import { ErroRegraNegocio } from '../../../errors/ErroRegraNegocio.error.js';
 import { Setor } from '../domain/setor.domain.js';
+import type { atualizarSetorDTO } from '../dtos/atualizar-setor.dto.js';
 import type { ISetorRepository } from '../infra/setor.repository.js';
-import type { atualizarSetorDTO, criarSetorDTO } from '../setor.type.js';
 
 export class AtualizarSetorUseCase {
   constructor(private readonly repository: ISetorRepository) {
