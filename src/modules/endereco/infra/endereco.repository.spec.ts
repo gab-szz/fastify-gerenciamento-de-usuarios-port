@@ -157,4 +157,63 @@ describe('EnderecoRepository', () => {
       expect(mockTypeorm.findOneBy).toHaveBeenCalledWith({ id: inputId });
     });
   });
+
+  describe('atualizar', () => {
+    test('Deve atualizar setor', async () => {
+      //ARRANGE
+      const input = Endereco.hidratar({
+        id: 1,
+        rua: 'Rua A',
+        numero: '123',
+        bairro: 'Centro',
+        cidade: 'São Paulo',
+        estado: 'SP',
+        cep: '01000-000',
+        complemento: 'Apto 101',
+        criadoEm: new Date(2026, 1, 23),
+        alteradoEm: undefined,
+        excluidoEm: undefined,
+      });
+
+      mockTypeorm.save.mockResolvedValue({
+        id: 1,
+        rua: 'Rua A',
+        numero: '123',
+        bairro: 'Centro',
+        cidade: 'São Paulo',
+        estado: 'SP',
+        cep: '01000-000',
+        complemento: 'Apto 101',
+        criadoEm: new Date(2026, 1, 23),
+        alteradoEm: new Date(),
+        excluidoEm: undefined,
+      });
+
+      //ACT
+      const saida = await enderecoRepository.atualizar(input);
+
+      //ASSERT
+      expect(saida).toBeInstanceOf(Endereco);
+      expect(saida!.id).toBe(1);
+      expect(saida!.rua).toBe('Rua A');
+      expect(saida!.numero).toBe('123');
+      expect(saida!.bairro).toBe('Centro');
+      expect(saida!.cidade).toBe('São Paulo');
+      expect(saida!.estado).toBe('SP');
+      expect(saida!.cep).toBe('01000-000');
+      expect(saida!.complemento).toBe('Apto 101');
+      expect(saida!.criadoEm).toEqual(new Date(2026, 1, 23));
+      expect(saida!.alteradoEm).toBeInstanceOf(Date);
+      expect(saida!.excluidoEm).toBeUndefined();
+      expect(mockTypeorm.save).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('remover', () => {
+    test('Deve remover um endereço', async () => {
+      //ARRANGE
+      //ACT
+      //ASSERT
+    });
+  });
 });
