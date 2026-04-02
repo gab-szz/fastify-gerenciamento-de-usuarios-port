@@ -71,4 +71,90 @@ describe('EnderecoRepository', () => {
       expect(mockTypeorm.save).toHaveBeenCalledOnce();
     });
   });
+
+  describe('consultarTodos', () => {
+    test('Deve retornar uma lista de endereços', async () => {
+      //ARRANGE
+      mockTypeorm.find = vi.fn();
+      mockTypeorm.find.mockResolvedValue([
+        {
+          id: 1,
+          rua: 'Rua A',
+          numero: '123',
+          bairro: 'Centro',
+          cidade: 'São Paulo',
+          estado: 'SP',
+          cep: '01000-000',
+          complemento: 'Apto 101',
+          criadoEm: new Date(),
+          alteradoEm: undefined,
+          excluidoEm: undefined,
+        },
+      ]);
+
+      //ACT
+      const saida = await enderecoRepository.consultarTodos();
+
+      //ASSERT
+      expect(saida).toHaveLength(1);
+      expect(saida[0]).toBeInstanceOf(Endereco);
+      expect(saida[0]!.id).toBe(1);
+      expect(saida[0]!.rua).toBe('Rua A');
+      expect(saida[0]!.numero).toBe('123');
+      expect(saida[0]!.bairro).toBe('Centro');
+      expect(saida[0]!.cidade).toBe('São Paulo');
+      expect(saida[0]!.estado).toBe('SP');
+      expect(saida[0]!.cep).toBe('01000-000');
+      expect(saida[0]!.complemento).toBe('Apto 101');
+      expect(saida[0]!.alteradoEm).toBeUndefined();
+      expect(saida[0]!.excluidoEm).toBeUndefined();
+    });
+
+    test('Deve retornar um endereço pelo ID', async () => {
+      //ARRANGE
+      const inputId = 1;
+      mockTypeorm.findOneBy.mockResolvedValue({
+        id: 1,
+        rua: 'Rua A',
+        numero: '123',
+        bairro: 'Centro',
+        cidade: 'São Paulo',
+        estado: 'SP',
+        cep: '01000-000',
+        complemento: 'Apto 101',
+        criadoEm: new Date(),
+        alteradoEm: undefined,
+        excluidoEm: undefined,
+      });
+
+      //ACT
+      const saida = await enderecoRepository.consultarPorId(inputId);
+
+      //ASSERT
+      expect(saida).toBeInstanceOf(Endereco);
+      expect(saida!.id).toBe(1);
+      expect(saida!.rua).toBe('Rua A');
+      expect(saida!.numero).toBe('123');
+      expect(saida!.bairro).toBe('Centro');
+      expect(saida!.cidade).toBe('São Paulo');
+      expect(saida!.estado).toBe('SP');
+      expect(saida!.cep).toBe('01000-000');
+      expect(saida!.complemento).toBe('Apto 101');
+      expect(saida!.alteradoEm).toBeUndefined();
+      expect(saida!.excluidoEm).toBeUndefined();
+    });
+
+    test('Deve retornar null quando endereço não existir', async () => {
+      //ARRANGE
+      const inputId = 999;
+      mockTypeorm.findOneBy.mockResolvedValue(null);
+
+      //ACT
+      const saida = await enderecoRepository.consultarPorId(inputId);
+
+      //ASSERT
+      expect(saida).toBeNull();
+      expect(mockTypeorm.findOneBy).toHaveBeenCalledWith({ id: inputId });
+    });
+  });
 });
