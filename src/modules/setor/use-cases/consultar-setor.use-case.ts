@@ -1,8 +1,8 @@
 import { ErroRegraNegocio } from '../../../errors/ErroRegraNegocio.error.js';
-import type { SetorRepository } from '../infra/setor.repository.js';
+import type { ISetorRepository } from '../infra/setor.repository.js';
 
 export class ConsultarSetorUseCases {
-  constructor(private readonly repository: SetorRepository) {}
+  constructor(private readonly repository: ISetorRepository) {}
 
   async porId(id: number) {
     if (!id || id < 0) {
