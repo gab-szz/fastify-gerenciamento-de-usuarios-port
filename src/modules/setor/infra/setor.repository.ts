@@ -26,13 +26,7 @@ export class SetorRepository implements ISetorRepository {
 
   async consultarTodos(): Promise<Setor[]> {
     const entities = await this.repository.find();
-    let setores: Setor[] = [];
-    if (entities) {
-      entities.forEach((setor) =>
-        setores.push(SetorMapper.entityParaDomain(setor)),
-      );
-    }
-    return setores;
+    return entities.map((entity) => SetorMapper.entityParaDomain(entity));
   }
 
   async consultarPorId(id: number): Promise<Setor | null> {
