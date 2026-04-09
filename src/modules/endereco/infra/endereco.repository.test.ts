@@ -159,7 +159,7 @@ describe('EnderecoRepository', () => {
   });
 
   describe('atualizar', () => {
-    test('Deve atualizar setor', async () => {
+    test('Deve atualizar endereço', async () => {
       //ARRANGE
       const input = Endereco.hidratar({
         id: 1,
@@ -210,10 +210,61 @@ describe('EnderecoRepository', () => {
   });
 
   describe('remover', () => {
-    test('Deve remover um endereço', async () => {
-      //ARRANGE
-      //ACT
-      //ASSERT
+    test('Deve remover um endereço com sucesso', async () => {
+      // ARRANGE
+      const endereco = Endereco.hidratar({
+        id: 1,
+        rua: 'Rua A',
+        numero: '123',
+        bairro: 'Centro',
+        cidade: 'São Paulo',
+        estado: 'SP',
+        cep: '01000-000',
+        complemento: 'Apto 101',
+        criadoEm: new Date(),
+        alteradoEm: undefined,
+        excluidoEm: undefined,
+      });
+
+      mockTypeorm.delete.mockResolvedValue({
+        affected: 1,
+      });
+
+      // ACT
+      const resultado = await enderecoRepository.remover(endereco);
+
+      // ASSERT
+      expect(resultado).toBe(true);
+      expect(mockTypeorm.delete).toHaveBeenCalledWith(1);
+      expect(mockTypeorm.delete).toHaveBeenCalledOnce();
+    });
+
+    test('Deve retornar false quando endereço não for encontrado', async () => {
+      // ARRANGE
+      const endereco = Endereco.hidratar({
+        id: 999,
+        rua: 'Rua A',
+        numero: '123',
+        bairro: 'Centro',
+        cidade: 'São Paulo',
+        estado: 'SP',
+        cep: '01000-000',
+        complemento: 'Apto 101',
+        criadoEm: new Date(),
+        alteradoEm: undefined,
+        excluidoEm: undefined,
+      });
+
+      mockTypeorm.delete.mockResolvedValue({
+        affected: 0,
+      });
+
+      // ACT
+      const resultado = await enderecoRepository.remover(endereco);
+
+      // ASSERT
+      expect(resultado).toBe(false);
+      expect(mockTypeorm.delete).toHaveBeenCalledWith(999);
     });
   });
 });
