@@ -4,7 +4,7 @@ import { Perfil } from './perfil.domain.js';
 export class PerfilMapper {
   constructor() {}
 
-  static deDomainParaEntity(domain: Perfil): Partial<PerfilEntity> {
+  static domainParaEntity(domain: Perfil): Partial<PerfilEntity> {
     return {
       id: domain.id,
       nome: domain.nome,
@@ -14,7 +14,7 @@ export class PerfilMapper {
     };
   }
 
-  static deEntityParaDomain(entity: PerfilEntity) {
+  static entityParaDomain(entity: PerfilEntity) {
     return Perfil.hidratar({
       id: entity.id,
       nome: entity.nome,
