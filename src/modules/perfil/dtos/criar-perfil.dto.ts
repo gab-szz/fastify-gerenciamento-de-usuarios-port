@@ -1,6 +1,6 @@
 import z from 'zod';
 
-const criarPerfilSchema = z.object({
+export const criarPerfilSchema = z.object({
   nome: z.string().min(4),
 });
 
