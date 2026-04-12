@@ -1,12 +1,13 @@
+import type { atualizarPerfilDTO } from '../dtos/atualizar-perfil.dto.js';
 import type { criarPerfilDTO } from '../dtos/criar-perfil.dto.js';
 import type { perfilType } from '../perfil.type.js';
 
 export class Perfil {
-  id?: number;
-  _nome!: string;
-  _criadoEm?: Date;
-  _alteradoEm?: Date;
-  _excluidoEm?: Date;
+  readonly id?: number;
+  private _nome!: string;
+  private _criadoEm?: Date;
+  private _alteradoEm?: Date;
+  private _excluidoEm?: Date;
 
   get nome(): string {
     return this._nome;
@@ -32,7 +33,7 @@ export class Perfil {
   }
 
   static hidratar(input: perfilType) {
-    if (input.id) {
+    if (!input.id) {
       throw new Error('Erro ao hidratar perfil: ID não foi fornecido.');
     }
     if (input.nome.length < 4) {
@@ -46,5 +47,21 @@ export class Perfil {
       throw new Error('Nome do perfil deve possuir ao menos 4 caracteres');
     }
     return new Perfil(input);
+  }
+
+  atualizar(input: atualizarPerfilDTO) {
+    if (input.nome.length < 4) {
+      throw new Error('Nome do perfil deve possuir ao menos 4 caracteres');
+    }
+    this._nome = input.nome;
+    this._alteradoEm = new Date();
+  }
+
+  excluir() {
+    if (this._excluidoEm) {
+      throw new Error('Perfil já excluído');
+    }
+    this._excluidoEm = new Date();
+    return true;
   }
 }
