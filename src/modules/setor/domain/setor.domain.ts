@@ -62,7 +62,7 @@ export class Setor {
       throw new Error('Erro ao remove setor: o mesmo já se encontra excluído.');
     }
     this._excluidoEm = new Date();
-    return this;
+    return true;
   }
 
   reativar() {
