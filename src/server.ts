@@ -10,6 +10,8 @@ import { setorRoutes } from './modules/setor/setor.routes.js';
 import { errorHandler } from './errors/error.handler.js';
 import enderecoPlugin from './modules/endereco/endereco.plugin.js';
 import { enderecoRoutes } from './modules/endereco/endereco.routes.js';
+import perfilPlugin from './modules/perfil/perfil.plugin.js';
+import { perfilRoutes } from './modules/perfil/perfil.routes.js';
 
 const app = fastify();
 
@@ -26,6 +28,9 @@ app.register(setorRoutes);
 
 app.register(enderecoPlugin);
 app.register(enderecoRoutes);
+
+app.register(perfilPlugin);
+app.register(perfilRoutes);
 
 app.setErrorHandler(errorHandler);
 
