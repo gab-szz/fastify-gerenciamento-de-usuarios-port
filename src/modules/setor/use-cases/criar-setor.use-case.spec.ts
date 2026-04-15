@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ISetorRepository } from '../infra/setor.repository.js';
 import { CriarSetorUseCase } from './criar-setor.use-case.js';
 import { Setor } from '../domain/setor.domain.js';
@@ -24,8 +24,8 @@ describe('CriarSetorUseCase', () => {
     const entrada = { nome: 'Tecnologia da Informação' };
     const useCase = new CriarSetorUseCase(mockRepository);
 
-    (mockRepository.consultarPorNome as Mock).mockResolvedValue(null);
-    (mockRepository.inserir as Mock).mockResolvedValue(
+    vi.mocked(mockRepository.consultarPorNome).mockResolvedValue(null);
+    vi.mocked(mockRepository.inserir).mockResolvedValue(
       Setor.hidratar({
         id: 1,
         nome: 'Tecnologia da Informação',
@@ -46,7 +46,7 @@ describe('CriarSetorUseCase', () => {
     const entrada = { nome: 'Tecnologia da Informação' };
     const useCase = new CriarSetorUseCase(mockRepository);
 
-    (mockRepository.consultarPorNome as Mock).mockResolvedValue({
+    vi.mocked(mockRepository.consultarPorNome).mockResolvedValue({
       nome: 'Tecnologia da Informação',
     } as Setor);
 

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ISetorRepository } from '../infra/setor.repository.js';
 import { ExcluirSetorUseCase } from './excluir-setor.use-case.js';
 import { Setor } from '../domain/setor.domain.js';
@@ -24,14 +24,14 @@ describe('RemoverSetorUseCase', () => {
     const inputId = 1;
     const useCase = new ExcluirSetorUseCase(mockRepository);
 
-    (mockRepository.consultarPorId as Mock).mockResolvedValue(
+    vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
       Setor.hidratar({
         id: 1,
         nome: 'Tecnologia da Informação',
         excluidoEm: undefined,
       }),
     );
-    (mockRepository.atualizar as Mock).mockResolvedValue(
+    vi.mocked(mockRepository.atualizar).mockResolvedValue(
       Setor.hidratar({
         id: 1,
         nome: 'Tecnologia da Informação',
@@ -53,14 +53,14 @@ describe('RemoverSetorUseCase', () => {
     const inputId = 1;
     const useCase = new ExcluirSetorUseCase(mockRepository);
 
-    (mockRepository.consultarPorId as Mock).mockResolvedValue(
+    vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
       Setor.hidratar({
         id: 1,
         nome: 'Tecnologia da Informação',
         excluidoEm: new Date(),
       }),
     );
-    (mockRepository.atualizar as Mock).mockResolvedValue(
+    vi.mocked(mockRepository.atualizar).mockResolvedValue(
       Setor.hidratar({
         id: 1,
         nome: 'Tecnologia da Informação',
@@ -80,7 +80,7 @@ describe('RemoverSetorUseCase', () => {
     const entrada = 1;
     const useCase = new ExcluirSetorUseCase(mockRepository);
 
-    (mockRepository.consultarPorId as Mock).mockResolvedValue(null);
+    vi.mocked(mockRepository.consultarPorId).mockResolvedValue(null);
 
     //ACT & ASSERT
     await expect(useCase.executar(entrada)).rejects.toThrow('Not exists');

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ISetorRepository } from '../infra/setor.repository.js';
 import { AtualizarSetorUseCase } from './atualizar-setor.use-case.js';
 import { Setor } from '../domain/setor.domain.js';
@@ -24,13 +24,13 @@ describe('group', () => {
     const entrada = { id: 1, nome: 'Recursos Humanos' };
     const useCase = new AtualizarSetorUseCase(mockRepository);
 
-    (mockRepository.consultarPorId as Mock).mockResolvedValue(
+    vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
       Setor.hidratar({
         id: 1,
         nome: 'Recursos Humanos',
       }),
     );
-    (mockRepository.atualizar as Mock).mockResolvedValue(
+    vi.mocked(mockRepository.atualizar).mockResolvedValue(
       Setor.hidratar({
         id: 1,
         nome: 'Tecnologia da Informação',
@@ -51,7 +51,7 @@ describe('group', () => {
     const entrada = { id: 1, nome: 'Recursos Humanos' };
     const useCase = new AtualizarSetorUseCase(mockRepository);
 
-    (mockRepository.consultarPorId as Mock).mockResolvedValue(null);
+    vi.mocked(mockRepository.consultarPorId).mockResolvedValue(null);
 
     //ACT & ASSERT
     await expect(useCase.executar(entrada)).rejects.toThrow('Not exists');

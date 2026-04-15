@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ISetorRepository } from '../infra/setor.repository.js';
 import { ConsultarSetorUseCases } from './consultar-setor.use-case.js';
 import { Setor } from '../domain/setor.domain.js';
@@ -25,7 +25,7 @@ describe('ConsultarSetorUseCase', () => {
       const inputId = 1;
       const useCase = new ConsultarSetorUseCases(mockRepository);
 
-      (mockRepository.consultarPorId as Mock).mockResolvedValue(
+      vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
         Setor.hidratar({
           id: 1,
           nome: 'Tecnologia da Informação',
@@ -62,7 +62,7 @@ describe('ConsultarSetorUseCase', () => {
       const inputNome = 'Tecnologia';
       const useCase = new ConsultarSetorUseCases(mockRepository);
 
-      (mockRepository.consultarPorNome as Mock).mockResolvedValue([
+      vi.mocked(mockRepository.consultarPorNome).mockResolvedValue([
         Setor.hidratar({
           id: 1,
           nome: 'Tecnologia da Informação',
@@ -99,7 +99,7 @@ describe('ConsultarSetorUseCase', () => {
       //ARRANGE
       const useCase = new ConsultarSetorUseCases(mockRepository);
 
-      (mockRepository.consultarTodos as Mock).mockResolvedValue([
+      vi.mocked(mockRepository.consultarTodos).mockResolvedValue([
         Setor.hidratar({
           id: 1,
           nome: 'Tecnologia da Informação',
@@ -127,7 +127,7 @@ describe('ConsultarSetorUseCase', () => {
       //ARRANGE
       const useCase = new ConsultarSetorUseCases(mockRepository);
 
-      (mockRepository.consultarTodos as Mock).mockResolvedValue([]);
+      vi.mocked(mockRepository.consultarTodos).mockResolvedValue([]);
 
       //ACT
       const saida = await useCase.todos();
