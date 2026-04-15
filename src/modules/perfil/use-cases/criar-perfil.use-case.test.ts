@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IPerfilRepository } from '../infra/perfil.repository.js';
 import { Perfil } from '../domain/perfil.domain.js';
 import { CriarPerfilUseCase } from './criar-perfil.use-case.js';
@@ -25,7 +25,7 @@ describe('CriarPerfilUseCase', () => {
     const input = { nome: 'T.I.' };
     const useCase = new CriarPerfilUseCase(mockRepository);
 
-    (mockRepository.inserir as Mock).mockResolvedValue(
+    vi.mocked(mockRepository.inserir).mockResolvedValue(
       Perfil.hidratar({ id: 1, nome: input.nome, criadoEm: new Date() }),
     );
 

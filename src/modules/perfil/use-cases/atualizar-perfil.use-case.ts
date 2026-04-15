@@ -9,7 +9,7 @@ export class AtualizarPerfilUseCase {
     let perfil = await this.rep.consultarPorId(input.id);
     perfil = this.verificarSePerfilExiste(perfil, input.id);
 
-    perfil.atualizar(input);
+    perfil.atualizar(input.nome);
     return this.rep.atualizar(perfil);
   }
 
