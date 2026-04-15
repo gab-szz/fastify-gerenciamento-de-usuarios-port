@@ -1,9 +1,9 @@
 import type { Endereco } from '../domain/endereco.domain.js';
 import type { atualizarEnderecoDTO } from '../endereco.type.js';
-import type { EnderecoRepository } from '../infra/endereco.repository.js';
+import type { IEnderecoRepository } from '../infra/endereco.repository.js';
 
 export class AtualizarEnderecoUseCase {
-  constructor(private readonly repository: EnderecoRepository) {}
+  constructor(private readonly repository: IEnderecoRepository) {}
 
   async executar(input: atualizarEnderecoDTO) {
     const endereco = await this.validarSeEnderecoExiste(input.id);
@@ -13,7 +13,7 @@ export class AtualizarEnderecoUseCase {
   private async validarSeEnderecoExiste(id: number): Promise<Endereco> {
     const endereco = await this.repository.consultarPorId(id);
     if (!endereco) {
-      throw new Error('Not Exists');
+      throw new Error(`Endereço com ID ${id} não encontrado`);
     }
     return endereco;
   }
