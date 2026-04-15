@@ -22,7 +22,7 @@ export class Perfil {
     return this._excluidoEm;
   }
 
-  constructor(input: perfilType) {
+  private constructor(input: perfilType) {
     this._nome = input.nome;
     this._criadoEm = input.criadoEm;
     this._alteradoEm = input.alteradoEm;
@@ -49,11 +49,11 @@ export class Perfil {
     return new Perfil(input);
   }
 
-  atualizar(input: atualizarPerfilDTO) {
-    if (input.nome.length < 4) {
+  atualizar(nome: string) {
+    if (nome.length < 4) {
       throw new Error('Nome do perfil deve possuir ao menos 4 caracteres');
     }
-    this._nome = input.nome;
+    this._nome = nome;
     this._alteradoEm = new Date();
   }
 
