@@ -14,6 +14,7 @@ describe('EnderecoRepository', () => {
     mockTypeorm = {
       save: vi.fn(),
       findOneBy: vi.fn(),
+      find: vi.fn(),
       delete: vi.fn(),
     };
 
@@ -38,7 +39,7 @@ describe('EnderecoRepository', () => {
       const dataCriacao = new Date();
 
       // Mock retorna uma EnderecoEntity (objeto plano), não um Endereco (domínio)
-      mockTypeorm.save.mockResolvedValue({
+      vi.mocked(mockTypeorm.save).mockResolvedValue({
         id: 1,
         rua: 'Rua A',
         numero: '123',
@@ -75,8 +76,7 @@ describe('EnderecoRepository', () => {
   describe('consultarTodos', () => {
     test('Deve retornar uma lista de endereços', async () => {
       //ARRANGE
-      mockTypeorm.find = vi.fn();
-      mockTypeorm.find.mockResolvedValue([
+      vi.mocked(mockTypeorm.find).mockResolvedValue([
         {
           id: 1,
           rua: 'Rua A',
@@ -113,7 +113,7 @@ describe('EnderecoRepository', () => {
     test('Deve retornar um endereço pelo ID', async () => {
       //ARRANGE
       const inputId = 1;
-      mockTypeorm.findOneBy.mockResolvedValue({
+      vi.mocked(mockTypeorm.findOneBy).mockResolvedValue({
         id: 1,
         rua: 'Rua A',
         numero: '123',
@@ -147,7 +147,7 @@ describe('EnderecoRepository', () => {
     test('Deve retornar null quando endereço não existir', async () => {
       //ARRANGE
       const inputId = 999;
-      mockTypeorm.findOneBy.mockResolvedValue(null);
+      vi.mocked(mockTypeorm.findOneBy).mockResolvedValue(null);
 
       //ACT
       const saida = await enderecoRepository.consultarPorId(inputId);
@@ -175,7 +175,7 @@ describe('EnderecoRepository', () => {
         excluidoEm: undefined,
       });
 
-      mockTypeorm.save.mockResolvedValue({
+      vi.mocked(mockTypeorm.save).mockResolvedValue({
         id: 1,
         rua: 'Rua A',
         numero: '123',
@@ -226,7 +226,7 @@ describe('EnderecoRepository', () => {
         excluidoEm: undefined,
       });
 
-      mockTypeorm.delete.mockResolvedValue({
+      vi.mocked(mockTypeorm.delete).mockResolvedValue({
         affected: 1,
       });
 
@@ -255,7 +255,7 @@ describe('EnderecoRepository', () => {
         excluidoEm: undefined,
       });
 
-      mockTypeorm.delete.mockResolvedValue({
+      vi.mocked(mockTypeorm.delete).mockResolvedValue({
         affected: 0,
       });
 
@@ -265,6 +265,41 @@ describe('EnderecoRepository', () => {
       // ASSERT
       expect(resultado).toBe(false);
       expect(mockTypeorm.delete).toHaveBeenCalledWith(999);
+    });
+  });
+
+  describe('consultarTodos (branches)', () => {
+    test('Deve retornar lista vazia quando find retornar null', async () => {
+      // ARRANGE
+      vi.mocked(mockTypeorm.find).mockResolvedValue(null as any);
+
+      // ACT
+      const saida = await enderecoRepository.consultarTodos();
+
+      // ASSERT
+      expect(saida).toHaveLength(0);
+    });
+  });
+
+  describe('atualizar (branches)', () => {
+    test('Deve retornar null quando save retornar null', async () => {
+      // ARRANGE
+      const input = Endereco.hidratar({
+        id: 1,
+        rua: 'Rua A',
+        numero: '123',
+        bairro: 'Centro',
+        cidade: 'São Paulo',
+        estado: 'SP',
+        cep: '01000-000',
+      });
+      vi.mocked(mockTypeorm.save).mockResolvedValue(null as any);
+
+      // ACT
+      const saida = await enderecoRepository.atualizar(input);
+
+      // ASSERT
+      expect(saida).toBeNull();
     });
   });
 });

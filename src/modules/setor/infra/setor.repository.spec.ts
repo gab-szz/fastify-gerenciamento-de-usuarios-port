@@ -14,6 +14,7 @@ describe('SetorRepository', () => {
     mockTypeorm = {
       save: vi.fn(),
       findOneBy: vi.fn(),
+      find: vi.fn(),
       delete: vi.fn(),
     };
 
@@ -27,7 +28,7 @@ describe('SetorRepository', () => {
       // ARRANGE
       const entrada = Setor.criar({ nome: 'TI' });
 
-      mockTypeorm.save.mockResolvedValue({
+      vi.mocked(mockTypeorm.save).mockResolvedValue({
         id: 1,
         nome: 'TI',
         criadoEm: new Date(),
@@ -49,8 +50,7 @@ describe('SetorRepository', () => {
   describe('consultarTodos', () => {
     test('Deve retornar uma lista de setores', async () => {
       // ARRANGE
-      mockTypeorm.find = vi.fn();
-      mockTypeorm.find.mockResolvedValue([
+      vi.mocked(mockTypeorm.find).mockResolvedValue([
         {
           id: 1,
           nome: 'TI',
@@ -81,8 +81,7 @@ describe('SetorRepository', () => {
 
     test('Deve retornar uma lista vazia quando não houver setores', async () => {
       // ARRANGE
-      mockTypeorm.find = vi.fn();
-      mockTypeorm.find.mockResolvedValue([]);
+      vi.mocked(mockTypeorm.find).mockResolvedValue([]);
 
       // ACT
       const saida = await setorRepository.consultarTodos();
@@ -98,7 +97,7 @@ describe('SetorRepository', () => {
       // ARRANGE
       const entrada = 1;
 
-      mockTypeorm.findOneBy.mockResolvedValue({
+      vi.mocked(mockTypeorm.findOneBy).mockResolvedValue({
         id: 1,
         nome: 'Financeiro',
         criadoEm: new Date(),
@@ -122,7 +121,7 @@ describe('SetorRepository', () => {
       // ARRANGE
       const entrada = 999;
 
-      mockTypeorm.findOneBy.mockResolvedValue(null);
+      vi.mocked(mockTypeorm.findOneBy).mockResolvedValue(null);
 
       // ACT
       const saida = await setorRepository.consultarPorId(entrada);
@@ -138,7 +137,7 @@ describe('SetorRepository', () => {
       // ARRANGE
       const entrada = 1;
 
-      mockTypeorm.findOneBy.mockRejectedValue(
+      vi.mocked(mockTypeorm.findOneBy).mockRejectedValue(
         new Error('Erro de conexão com banco'),
       );
 
@@ -154,7 +153,7 @@ describe('SetorRepository', () => {
       // ARRANGE
       const entrada = 'TI';
 
-      mockTypeorm.findOneBy.mockResolvedValue({
+      vi.mocked(mockTypeorm.findOneBy).mockResolvedValue({
         id: 1,
         nome: 'TI',
         criadoEm: new Date(),
@@ -178,7 +177,7 @@ describe('SetorRepository', () => {
       // ARRANGE
       const entrada = 'Não existe';
 
-      mockTypeorm.findOneBy.mockResolvedValue(null);
+      vi.mocked(mockTypeorm.findOneBy).mockResolvedValue(null);
 
       // ACT
       const saida = await setorRepository.consultarPorNome(entrada);
@@ -200,7 +199,7 @@ describe('SetorRepository', () => {
         criadoEm: new Date(2026, 1, 23),
       });
 
-      mockTypeorm.save.mockResolvedValue({
+      vi.mocked(mockTypeorm.save).mockResolvedValue({
         id: 1,
         nome: 'TI',
         criadoEm: new Date(2026, 1, 23),
@@ -224,7 +223,7 @@ describe('SetorRepository', () => {
         nome: 'Não existe',
       });
 
-      mockTypeorm.save.mockResolvedValue(null);
+      vi.mocked(mockTypeorm.save).mockResolvedValue(null);
 
       // ACT
       const saida = await setorRepository.atualizar(entrada);
@@ -243,7 +242,7 @@ describe('SetorRepository', () => {
         nome: 'TI',
       });
 
-      mockTypeorm.delete.mockResolvedValue({ affected: 1 });
+      vi.mocked(mockTypeorm.delete).mockResolvedValue({ affected: 1 });
 
       // ACT
       const saida = await setorRepository.remover(entrada);
@@ -260,7 +259,7 @@ describe('SetorRepository', () => {
         nome: 'Não existe',
       });
 
-      mockTypeorm.delete.mockResolvedValue({ affected: 0 });
+      vi.mocked(mockTypeorm.delete).mockResolvedValue({ affected: 0 });
 
       // ACT
       const saida = await setorRepository.remover(entrada);
