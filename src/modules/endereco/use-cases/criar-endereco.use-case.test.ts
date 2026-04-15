@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { CriarEnderecoUseCase } from './criar-endereco.use-case.js';
 import type { IEnderecoRepository } from '../infra/endereco.repository.js';
 import { Endereco } from '../domain/endereco.domain.js';
@@ -32,7 +32,7 @@ describe('CriarEnderecoUseCase', () => {
     const criarEnderecoUseCase = new CriarEnderecoUseCase(mockRepository);
 
     const enderecoEsperado = Endereco.hidratar({ ...input, id: 1 });
-    (mockRepository.inserir as Mock).mockResolvedValue(enderecoEsperado);
+    vi.mocked(mockRepository.inserir).mockResolvedValue(enderecoEsperado);
 
     // ACT
     const retorno = await criarEnderecoUseCase.executar(input);
