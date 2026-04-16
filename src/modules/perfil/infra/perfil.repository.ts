@@ -1,5 +1,5 @@
 import { Service } from 'fastify-decorators';
-import { ILike } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { PerfilMapper } from '../domain/perfil.mapper.js';
 import type { Perfil } from '../domain/perfil.domain.js';
 import type { IPerfilRepository } from './perfil.repository.interface.js';
@@ -8,8 +8,15 @@ import { PerfilEntity } from './perfil.entity.js';
 
 @Service()
 export class PerfilRepository implements IPerfilRepository {
+  private repositoryInstance: Repository<PerfilEntity>;
+
+  constructor(repository?: Repository<PerfilEntity>) {
+    this.repositoryInstance =
+      repository || fonteDeDados.getRepository(PerfilEntity);
+  }
+
   private get repository() {
-    return fonteDeDados.getRepository(PerfilEntity);
+    return this.repositoryInstance;
   }
 
   async consultarPorId(id: number): Promise<Perfil | null> {

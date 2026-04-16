@@ -4,11 +4,19 @@ import type { Setor } from '../domain/setor.domain.js';
 import type { ISetorRepository } from './setor.repository.interface.js';
 import { fonteDeDados } from '../../../database/data-source.js';
 import { SetorEntity } from './setor.entity.js';
+import type { Repository } from 'typeorm';
 
 @Service()
 export class SetorRepository implements ISetorRepository {
+  private repositoryInstance: Repository<SetorEntity>;
+
+  constructor(repository?: Repository<SetorEntity>) {
+    this.repositoryInstance =
+      repository || fonteDeDados.getRepository(SetorEntity);
+  }
+
   private get repository() {
-    return fonteDeDados.getRepository(SetorEntity);
+    return this.repositoryInstance;
   }
 
   async inserir(setor: Setor): Promise<Setor> {

@@ -4,11 +4,19 @@ import type { Endereco } from '../domain/endereco.domain.js';
 import type { IEnderecoRepository } from './endereco.repository.interface.js';
 import { fonteDeDados } from '../../../database/data-source.js';
 import { EnderecoEntity } from './endereco.entity.js';
+import type { Repository } from 'typeorm';
 
 @Service()
 export class EnderecoRepository implements IEnderecoRepository {
+  private repositoryInstance: Repository<EnderecoEntity>;
+
+  constructor(repository?: Repository<EnderecoEntity>) {
+    this.repositoryInstance =
+      repository || fonteDeDados.getRepository(EnderecoEntity);
+  }
+
   private get repository() {
-    return fonteDeDados.getRepository(EnderecoEntity);
+    return this.repositoryInstance;
   }
 
   /**
