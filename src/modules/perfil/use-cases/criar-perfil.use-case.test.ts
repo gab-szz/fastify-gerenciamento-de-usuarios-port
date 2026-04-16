@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { IPerfilRepository } from '../infra/perfil.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
+import type { IPerfilRepository } from '../infra/perfil.repository.interface.js';
+import { PerfilRepository } from '../infra/perfil.repository.js';
 import { Perfil } from '../domain/perfil.domain.js';
 import { CriarPerfilUseCase } from './criar-perfil.use-case.js';
 
 describe('CriarPerfilUseCase', () => {
   let mockRepository: IPerfilRepository;
+  let useCase: CriarPerfilUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -17,12 +20,16 @@ describe('CriarPerfilUseCase', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: CriarPerfilUseCase,
+      mocks: [{ provide: PerfilRepository, useValue: mockRepository as never }],
+    });
   });
 
   it('Deve criar um perfil com sucesso', async () => {
     // ARRANGE
     const input = { nome: 'T.I.' };
-    const useCase = new CriarPerfilUseCase(mockRepository);
 
     vi.mocked(mockRepository.inserir).mockResolvedValue(
       Perfil.hidratar({ id: 1, nome: input.nome, criadoEm: new Date() }),

@@ -1,9 +1,13 @@
+import { Service, Inject } from 'fastify-decorators';
 import type { Perfil } from '../domain/perfil.domain.js';
 import type { atualizarPerfilDTO } from '../dtos/atualizar-perfil.dto.js';
-import type { IPerfilRepository } from '../infra/perfil.repository.js';
+import type { IPerfilRepository } from '../infra/perfil.repository.interface.js';
+import { PerfilRepository } from '../infra/perfil.repository.js';
 
+@Service()
 export class AtualizarPerfilUseCase {
-  constructor(private readonly rep: IPerfilRepository) {}
+  @Inject(PerfilRepository)
+  private readonly rep!: IPerfilRepository;
 
   async exec(input: atualizarPerfilDTO): Promise<Perfil | null> {
     let perfil = await this.rep.consultarPorId(input.id);

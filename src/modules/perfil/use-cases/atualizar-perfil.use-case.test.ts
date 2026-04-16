@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { IPerfilRepository } from '../infra/perfil.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
+import type { IPerfilRepository } from '../infra/perfil.repository.interface.js';
+import { PerfilRepository } from '../infra/perfil.repository.js';
 import { AtualizarPerfilUseCase } from './atualizar-perfil.use-case.js';
 import { Perfil } from '../domain/perfil.domain.js';
 
 describe('AtualizarPerfilUseCase', () => {
   let mockRepository: IPerfilRepository;
+  let useCase: AtualizarPerfilUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -17,12 +20,16 @@ describe('AtualizarPerfilUseCase', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: AtualizarPerfilUseCase,
+      mocks: [{ provide: PerfilRepository, useValue: mockRepository as never }],
+    });
   });
 
   it('Deve atualizar um perfil com sucesso', async () => {
     // ARRANGE
     const input = { id: 1, nome: 'T.I.' };
-    const useCase = new AtualizarPerfilUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
       Perfil.hidratar({
@@ -56,7 +63,6 @@ describe('AtualizarPerfilUseCase', () => {
   it('Deve dar erro quando não encontrar o id', async () => {
     // ARRANGE
     const input = { id: 999, nome: 'T.I.' };
-    const useCase = new AtualizarPerfilUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(null);
 

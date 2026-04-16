@@ -1,5 +1,7 @@
 import { beforeEach, describe, it, vi, expect } from 'vitest';
-import type { IPerfilRepository } from '../infra/perfil.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
+import type { IPerfilRepository } from '../infra/perfil.repository.interface.js';
+import { PerfilRepository } from '../infra/perfil.repository.js';
 import { Perfil } from '../domain/perfil.domain.js';
 import { ExcluirPerfilUseCase } from './excluir-perfil.use-case.js';
 
@@ -7,7 +9,7 @@ describe('ExcluirPerfilUseCase', () => {
   let mockRepository: IPerfilRepository;
   let excluirPerfilUseCase: ExcluirPerfilUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -19,7 +21,10 @@ describe('ExcluirPerfilUseCase', () => {
       remover: vi.fn(),
     };
 
-    excluirPerfilUseCase = new ExcluirPerfilUseCase(mockRepository);
+    excluirPerfilUseCase = await configureServiceTest({
+      service: ExcluirPerfilUseCase,
+      mocks: [{ provide: PerfilRepository, useValue: mockRepository as never }],
+    });
   });
 
   it('Deve excluir com sucesso um perfil', async () => {

@@ -1,18 +1,15 @@
-import type { Repository } from 'typeorm';
-import type { Endereco } from '../domain/endereco.domain.js';
+import { Service } from 'fastify-decorators';
 import { EnderecoMapper } from '../domain/endereco.mapper.js';
-import type { EnderecoEntity } from './endereco.entity.js';
+import type { Endereco } from '../domain/endereco.domain.js';
+import type { IEnderecoRepository } from './endereco.repository.interface.js';
+import { fonteDeDados } from '../../../database/data-source.js';
+import { EnderecoEntity } from './endereco.entity.js';
 
-export interface IEnderecoRepository {
-  inserir(endereco: Endereco): Promise<Endereco>;
-  consultarPorId(id: number): Promise<Endereco | null>;
-  consultarTodos(): Promise<Endereco[]>;
-  atualizar(endereco: Endereco): Promise<Endereco | null>;
-  remover(endereco: Endereco): Promise<boolean>;
-}
-
-export class EnderecoRepository {
-  constructor(private readonly repository: Repository<EnderecoEntity>) {}
+@Service()
+export class EnderecoRepository implements IEnderecoRepository {
+  private get repository() {
+    return fonteDeDados.getRepository(EnderecoEntity);
+  }
 
   /**
    * Cria um novo setor no Banco de Dados

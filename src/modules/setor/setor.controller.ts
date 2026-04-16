@@ -1,3 +1,4 @@
+import { Controller, GET, POST, PUT, DELETE, Inject } from 'fastify-decorators';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { criarSetorSchema } from './dtos/criar-setor.dto.js';
 import {
@@ -6,81 +7,66 @@ import {
 } from './dtos/consultar-setor.dto.js';
 import { atualizarSetorSchema } from './dtos/atualizar-setor.dto.js';
 import { excluirSetorSchema } from './dtos/excluir-setor.dto.js';
+import { CriarSetorUseCase } from './use-cases/criar-setor.use-case.js';
+import { ConsultarSetorUseCases } from './use-cases/consultar-setor.use-case.js';
+import { AtualizarSetorUseCase } from './use-cases/atualizar-setor.use-case.js';
+import { ExcluirSetorUseCase } from './use-cases/excluir-setor.use-case.js';
 
+@Controller({ route: '/setor' })
 export class SetorController {
-  constructor() {}
+  @Inject(CriarSetorUseCase)
+  private readonly criarUseCase!: CriarSetorUseCase;
 
-  /**
-   * Cria um novo setor
-   * @param request Requisição com dados do setor no body
-   * @param reply Resposta da API
-   * @returns 201 com setor criado ou erro de validação
-   */
+  @Inject(ConsultarSetorUseCases)
+  private readonly consultarUseCases!: ConsultarSetorUseCases;
+
+  @Inject(AtualizarSetorUseCase)
+  private readonly atualizarUseCase!: AtualizarSetorUseCase;
+
+  @Inject(ExcluirSetorUseCase)
+  private readonly excluirUseCase!: ExcluirSetorUseCase;
+
+  @POST({ url: '/' })
   async criar(request: FastifyRequest, reply: FastifyReply) {
     const input = criarSetorSchema.parse(request.body);
-    const setor = await request.setorUseCases.criar.executar(input);
+    const setor = await this.criarUseCase.executar(input);
     return reply.status(201).send(setor);
   }
 
-  /**
-   * Lista todos os setores cadastrados
-   * @param request Requisição da API
-   * @param reply Resposta da API
-   * @returns 200 com array de setores
-   */
-  async consultar(request: FastifyRequest, reply: FastifyReply) {
-    const setores = await request.setorUseCases.consultar.todos();
+  @GET({ url: '/' })
+  async consultar(_request: FastifyRequest, reply: FastifyReply) {
+    const setores = await this.consultarUseCases.todos();
     return reply.status(200).send(setores);
   }
 
-  /**
-   * Busca setores por nome
-   * @param request Requisição com nome do setor nos params
-   * @param reply Resposta da API
-   * @returns 200 com array de setores encontrados
-   */
+  @GET({ url: '/nome/:nome' })
   async consultarPorNome(request: FastifyRequest, reply: FastifyReply) {
     const input = consultarSetorPorNomeSchema.parse(request.params);
-    const setores = await request.setorUseCases.consultar.porNome(input.nome);
+    const setores = await this.consultarUseCases.porNome(input.nome);
     return reply.status(200).send(setores);
   }
 
-  /**
-   * Busca um setor pelo ID
-   * @param request Requisição com ID do setor nos params
-   * @param reply Resposta da API
-   * @returns 200 com setor encontrado
-   */
+  @GET({ url: '/:id' })
   async consultarPorId(request: FastifyRequest, reply: FastifyReply) {
     const input = consultarSetorPorIdSchema.parse(request.params);
-    const setor = await request.setorUseCases.consultar.porId(input.id);
+    const setor = await this.consultarUseCases.porId(input.id);
     return reply.status(200).send(setor);
   }
 
-  /**
-   * Atualiza um setor existente
-   * @param request Requisição com ID nos params e dados atualizados no body
-   * @param reply Resposta da API
-   * @returns 200 com setor atualizado
-   */
+  @PUT({ url: '/:id' })
   async atualizar(request: FastifyRequest, reply: FastifyReply) {
     const input = atualizarSetorSchema.parse({
-      id: (request.params as any).id,
-      nome: (request.body as any).nome,
+      id: (request.params as { id: number }).id,
+      nome: (request.body as { nome: string }).nome,
     });
-    const setor = await request.setorUseCases.atualizar.executar(input);
+    const setor = await this.atualizarUseCase.executar(input);
     return reply.status(200).send(setor);
   }
 
-  /**
-   * Remove um setor
-   * @param request Requisição com ID do setor nos params
-   * @param reply Resposta da API
-   * @returns 200 com resposta da exclusão
-   */
+  @DELETE({ url: '/:id' })
   async excluir(request: FastifyRequest, reply: FastifyReply) {
     const input = excluirSetorSchema.parse(request.params);
-    const setor = await request.setorUseCases.excluir.executar(input.id);
+    const setor = await this.excluirUseCase.executar(input.id);
     return reply.status(200).send(setor);
   }
 }

@@ -1,22 +1,14 @@
-import type { SetorEntity } from './setor.entity.js';
-import type { Setor } from '../domain/setor.domain.js';
-import type { Repository } from 'typeorm';
+import { Service } from 'fastify-decorators';
 import { SetorMapper } from '../domain/setor.mapper.js';
+import type { Setor } from '../domain/setor.domain.js';
+import type { ISetorRepository } from './setor.repository.interface.js';
+import { fonteDeDados } from '../../../database/data-source.js';
+import { SetorEntity } from './setor.entity.js';
 
-export interface ISetorRepository {
-  inserir(setor: Setor): Promise<Setor>;
-  consultarPorId(id: number): Promise<Setor | null>;
-  consultarPorNome(nome: string): Promise<Setor | null>;
-  consultarTodos(): Promise<Setor[]>;
-  atualizar(setor: Setor): Promise<Setor | null>;
-  remover(setor: Setor): Promise<boolean>;
-}
-
+@Service()
 export class SetorRepository implements ISetorRepository {
-  repository: Repository<SetorEntity>;
-
-  constructor(repository: Repository<SetorEntity>) {
-    this.repository = repository;
+  private get repository() {
+    return fonteDeDados.getRepository(SetorEntity);
   }
 
   async inserir(setor: Setor): Promise<Setor> {

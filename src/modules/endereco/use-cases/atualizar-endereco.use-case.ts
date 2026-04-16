@@ -1,9 +1,13 @@
+import { Service, Inject } from 'fastify-decorators';
 import type { Endereco } from '../domain/endereco.domain.js';
 import type { atualizarEnderecoDTO } from '../endereco.type.js';
-import type { IEnderecoRepository } from '../infra/endereco.repository.js';
+import type { IEnderecoRepository } from '../infra/endereco.repository.interface.js';
+import { EnderecoRepository } from '../infra/endereco.repository.js';
 
+@Service()
 export class AtualizarEnderecoUseCase {
-  constructor(private readonly repository: IEnderecoRepository) {}
+  @Inject(EnderecoRepository)
+  private readonly repository!: IEnderecoRepository;
 
   async executar(input: atualizarEnderecoDTO) {
     const endereco = await this.validarSeEnderecoExiste(input.id);

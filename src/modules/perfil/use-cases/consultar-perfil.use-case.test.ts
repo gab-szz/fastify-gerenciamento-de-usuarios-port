@@ -1,5 +1,7 @@
 import { describe, vi, it, beforeEach, expect } from 'vitest';
-import type { IPerfilRepository } from '../infra/perfil.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
+import type { IPerfilRepository } from '../infra/perfil.repository.interface.js';
+import { PerfilRepository } from '../infra/perfil.repository.js';
 import { ConsultarPerfilUseCase } from './consultar-perfil.use-case.js';
 import { Perfil } from '../domain/perfil.domain.js';
 
@@ -7,7 +9,7 @@ describe('ConsultarPerfilUseCase', () => {
   let mockRepository: IPerfilRepository;
   let useCase: ConsultarPerfilUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -19,7 +21,10 @@ describe('ConsultarPerfilUseCase', () => {
       remover: vi.fn(),
     };
 
-    useCase = new ConsultarPerfilUseCase(mockRepository);
+    useCase = await configureServiceTest({
+      service: ConsultarPerfilUseCase,
+      mocks: [{ provide: PerfilRepository, useValue: mockRepository as never }],
+    });
   });
 
   it('Deve consultar um perfil por ID com sucesso', async () => {

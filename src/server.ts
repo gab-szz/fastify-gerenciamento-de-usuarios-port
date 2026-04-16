@@ -1,17 +1,15 @@
 import fastify from 'fastify';
 import cors from '@fastify/cors';
+import { bootstrap } from 'fastify-decorators';
 import { env } from './config/env.js';
 import {
   destruirConexaoComFonteDeDados,
   inicializarConexaoComFonteDeDados,
 } from './database/data-source.js';
-import setorPlugin from './modules/setor/setor.plugin.js';
-import { setorRoutes } from './modules/setor/setor.routes.js';
 import { errorHandler } from './errors/error.handler.js';
-import enderecoPlugin from './modules/endereco/endereco.plugin.js';
-import { enderecoRoutes } from './modules/endereco/endereco.routes.js';
-import perfilPlugin from './modules/perfil/perfil.plugin.js';
-import { perfilRoutes } from './modules/perfil/perfil.routes.js';
+import { SetorController } from './modules/setor/setor.controller.js';
+import { EnderecoController } from './modules/endereco/endereco.controller.js';
+import { PerfilController } from './modules/perfil/perfil.controller.js';
 
 const app = fastify();
 
@@ -23,14 +21,9 @@ await app.register(cors, {
 
 await inicializarConexaoComFonteDeDados();
 
-app.register(setorPlugin);
-app.register(setorRoutes);
-
-app.register(enderecoPlugin);
-app.register(enderecoRoutes);
-
-app.register(perfilPlugin);
-app.register(perfilRoutes);
+app.register(bootstrap, {
+  controllers: [SetorController, EnderecoController, PerfilController],
+});
 
 app.setErrorHandler(errorHandler);
 

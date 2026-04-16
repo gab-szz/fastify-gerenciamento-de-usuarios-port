@@ -1,8 +1,12 @@
+import { Service, Inject } from 'fastify-decorators';
 import { ErroRegraNegocio } from '../../../errors/ErroRegraNegocio.error.js';
-import type { ISetorRepository } from '../infra/setor.repository.js';
+import type { ISetorRepository } from '../infra/setor.repository.interface.js';
+import { SetorRepository } from '../infra/setor.repository.js';
 
+@Service()
 export class ConsultarSetorUseCases {
-  constructor(private readonly repository: ISetorRepository) {}
+  @Inject(SetorRepository)
+  private readonly repository!: ISetorRepository;
 
   async porId(id: number) {
     if (!id || id < 0) {

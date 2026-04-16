@@ -1,20 +1,16 @@
-import type { Repository } from 'typeorm';
+import { Service } from 'fastify-decorators';
 import { ILike } from 'typeorm';
-import type { PerfilEntity } from './perfil.entity.js';
 import { PerfilMapper } from '../domain/perfil.mapper.js';
 import type { Perfil } from '../domain/perfil.domain.js';
+import type { IPerfilRepository } from './perfil.repository.interface.js';
+import { fonteDeDados } from '../../../database/data-source.js';
+import { PerfilEntity } from './perfil.entity.js';
 
-export interface IPerfilRepository {
-  consultarTodos(): Promise<Perfil[]>;
-  consultarPorId(id: number): Promise<Perfil | null>;
-  consultarPorNome(nome: string): Promise<Perfil | null>;
-  inserir(input: Perfil): Promise<Perfil | null>;
-  atualizar(input: Perfil): Promise<Perfil | null>;
-  remover(perfil: Perfil): Promise<boolean>;
-}
-
+@Service()
 export class PerfilRepository implements IPerfilRepository {
-  constructor(private readonly repository: Repository<PerfilEntity>) {}
+  private get repository() {
+    return fonteDeDados.getRepository(PerfilEntity);
+  }
 
   async consultarPorId(id: number): Promise<Perfil | null> {
     const entity = await this.repository.findOneBy({ id });

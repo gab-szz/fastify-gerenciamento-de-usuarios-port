@@ -1,8 +1,11 @@
-import type { EnderecoEntity } from '../infra/endereco.entity.js';
-import type { EnderecoRepository } from '../infra/endereco.repository.js';
+import { Service, Inject } from 'fastify-decorators';
+import type { IEnderecoRepository } from '../infra/endereco.repository.interface.js';
+import { EnderecoRepository } from '../infra/endereco.repository.js';
 
+@Service()
 export class ConsultarEnderecoUseCase {
-  constructor(private readonly repository: EnderecoRepository) {}
+  @Inject(EnderecoRepository)
+  private readonly repository!: IEnderecoRepository;
 
   async porId(id: number) {
     return await this.repository.consultarPorId(id);

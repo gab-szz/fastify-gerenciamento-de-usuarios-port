@@ -1,12 +1,14 @@
+import { Service, Inject } from 'fastify-decorators';
 import { ErroRegraNegocio } from '../../../errors/ErroRegraNegocio.error.js';
 import { Setor } from '../domain/setor.domain.js';
 import type { criarSetorDTO } from '../dtos/criar-setor.dto.js';
-import type { ISetorRepository } from '../infra/setor.repository.js';
+import type { ISetorRepository } from '../infra/setor.repository.interface.js';
+import { SetorRepository } from '../infra/setor.repository.js';
 
+@Service()
 export class CriarSetorUseCase {
-  constructor(private readonly repository: ISetorRepository) {
-    this.repository = repository;
-  }
+  @Inject(SetorRepository)
+  private readonly repository!: ISetorRepository;
 
   async executar(input: criarSetorDTO) {
     await this._validarSeSetorExiste(input.nome);
