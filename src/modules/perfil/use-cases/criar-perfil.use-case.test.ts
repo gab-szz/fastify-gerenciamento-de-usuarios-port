@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IPerfilRepository } from '../infra/perfil.repository.js';
 import { Perfil } from '../domain/perfil.domain.js';
 import { CriarPerfilUseCase } from './criar-perfil.use-case.js';
-import { number } from 'zod';
 
 describe('CriarPerfilUseCase', () => {
   let mockRepository: IPerfilRepository;
