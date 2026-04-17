@@ -39,7 +39,7 @@ describe('PermissaoRepository', () => {
 
     //ASSERT
     expect(retorno).toBeInstanceOf(Permissao);
-    expect(retorno).equal(permissao);
-    expect(mockTypeorm.findOneby).toHaveBeenCalledOnce();
+    expect(retorno).toEqual(permissao);
+    expect(mockTypeorm.findOneBy).toHaveBeenCalledOnce();
   });
 });

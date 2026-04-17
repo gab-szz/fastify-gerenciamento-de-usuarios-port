@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { ISetorRepository } from '../infra/setor.repository.js';
 import { ExcluirSetorUseCase } from './excluir-setor.use-case.js';
 import { Setor } from '../domain/setor.domain.js';
+import type { ISetorRepository } from '../infra/setor.repository.interface.js';
 
 describe('RemoverSetorUseCase', () => {
   let mockRepository: ISetorRepository;
