@@ -1,6 +1,6 @@
 import z from 'zod';
 
-// Schema completo da entidade SETOR
+// Schema completo da entidade PERFIL
 export const perfilSchema = z.object({
   id: z.coerce.number().optional(),
   nome: z.string().min(4),

@@ -62,26 +62,26 @@ describe('PerfilRepository', () => {
   describe('consultarPorNome', () => {
     test('Deve retornar um perfil pelo nome', async () => {
       // ARRANGE
-      vi.mocked(mockTypeorm.findOne).mockResolvedValue(entityBase);
+      vi.mocked(mockTypeorm.find).mockResolvedValue([entityBase]);
 
       // ACT
       const saida = await perfilRepository.consultarPorNome('T.I.');
 
       // ASSERT
-      expect(saida).toBeInstanceOf(Perfil);
-      expect(saida?.nome).toBe('T.I.');
-      expect(mockTypeorm.findOne).toHaveBeenCalledOnce();
+      expect(saida[0]).toBeInstanceOf(Perfil);
+      expect(saida[0]!.nome).toBe('T.I.');
+      expect(mockTypeorm.find).toHaveBeenCalledOnce();
     });
 
-    test('Deve retornar null quando perfil não existir pelo nome', async () => {
+    test('Deve retornar lista vazia quando perfil não existir pelo nome', async () => {
       // ARRANGE
-      vi.mocked(mockTypeorm.findOne).mockResolvedValue(null);
+      vi.mocked(mockTypeorm.find).mockResolvedValue([]);
 
       // ACT
       const saida = await perfilRepository.consultarPorNome('Inexistente');
 
       // ASSERT
-      expect(saida).toBeNull();
+      expect(saida).toStrictEqual([]);
     });
   });
 

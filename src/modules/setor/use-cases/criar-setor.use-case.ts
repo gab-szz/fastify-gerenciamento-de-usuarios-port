@@ -10,6 +10,10 @@ export class CriarSetorUseCase {
   @Inject(SetorRepository)
   private readonly repository!: ISetorRepository;
 
+  constructor(repository?: ISetorRepository) {
+    if (repository) this.repository = repository;
+  }
+
   async executar(input: criarSetorDTO) {
     await this._validarSeSetorExiste(input.nome);
 

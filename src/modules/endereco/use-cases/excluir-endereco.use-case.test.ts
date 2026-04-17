@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { IEnderecoRepository } from '../infra/endereco.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
+import { EnderecoRepository } from '../infra/endereco.repository.js';
 import { ExcluirEnderecoUseCase } from './excluir-endereco.use-case.js';
 import { Endereco } from '../domain/endereco.domain.js';
+import type { IEnderecoRepository } from '../infra/endereco.repository.interface.js';
 
 describe('ExcluirEnderecoUseCase', () => {
   let mockRepository: IEnderecoRepository;
+  let useCase: ExcluirEnderecoUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -16,11 +19,17 @@ describe('ExcluirEnderecoUseCase', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: ExcluirEnderecoUseCase,
+      mocks: [
+        { provide: EnderecoRepository, useValue: mockRepository as never },
+      ],
+    });
   });
 
   test('Deve excluir um endereço com sucesso', async () => {
     // ARRANGE
-    const useCase = new ExcluirEnderecoUseCase(mockRepository as any);
     const enderecoAtivo = Endereco.hidratar({
       id: 1,
       rua: 'Rua A',
@@ -56,7 +65,6 @@ describe('ExcluirEnderecoUseCase', () => {
 
   test('Deve lançar erro quando endereço não existir', async () => {
     // ARRANGE
-    const useCase = new ExcluirEnderecoUseCase(mockRepository as any);
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(null);
 
     // ACT & ASSERT

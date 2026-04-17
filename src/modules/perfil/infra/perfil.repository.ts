@@ -24,20 +24,18 @@ export class PerfilRepository implements IPerfilRepository {
     return entity ? PerfilMapper.entityParaDomain(entity) : null;
   }
 
-  async consultarPorNome(nome: string): Promise<Perfil | null> {
-    const entity = await this.repository.findOne({
+  async consultarPorNome(nome: string): Promise<Perfil[]> {
+    const entities = await this.repository.find({
       where: {
         nome: ILike(`%${nome}%`),
       },
     });
-    return entity ? PerfilMapper.entityParaDomain(entity) : null;
+    return this.converterListaParaDomain(entities);
   }
 
   async consultarTodos(): Promise<Perfil[]> {
-    const perfis = await this.repository.find();
-    return perfis
-      ? perfis.map((perfil) => PerfilMapper.entityParaDomain(perfil))
-      : [];
+    const entities = await this.repository.find();
+    return this.converterListaParaDomain(entities);
   }
 
   async inserir(input: Perfil): Promise<Perfil | null> {
@@ -54,5 +52,12 @@ export class PerfilRepository implements IPerfilRepository {
   async remover(perfil: Perfil): Promise<boolean> {
     const resultado = await this.repository.delete(perfil.id!);
     return resultado.affected ? true : false;
+  }
+
+  private converterListaParaDomain(setores: PerfilEntity[]) {
+    if (setores) {
+      return setores.map((setor) => PerfilMapper.entityParaDomain(setor));
+    }
+    return [] as Perfil[];
   }
 }

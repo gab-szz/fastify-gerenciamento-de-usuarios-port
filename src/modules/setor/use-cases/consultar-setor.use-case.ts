@@ -8,6 +8,10 @@ export class ConsultarSetorUseCases {
   @Inject(SetorRepository)
   private readonly repository!: ISetorRepository;
 
+  constructor(repository?: ISetorRepository) {
+    if (repository) this.repository = repository;
+  }
+
   async porId(id: number) {
     if (!id || id < 0) {
       throw new ErroRegraNegocio('A valid ID must be provided.');

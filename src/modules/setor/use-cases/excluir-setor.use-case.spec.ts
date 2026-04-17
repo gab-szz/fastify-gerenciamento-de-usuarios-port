@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { configureServiceTest } from 'fastify-decorators/testing';
 import { ExcluirSetorUseCase } from './excluir-setor.use-case.js';
+import { SetorRepository } from '../infra/setor.repository.js';
 import { Setor } from '../domain/setor.domain.js';
 import type { ISetorRepository } from '../infra/setor.repository.interface.js';
 
-describe('RemoverSetorUseCase', () => {
+describe('ExcluirSetorUseCase', () => {
   let mockRepository: ISetorRepository;
+  let useCase: ExcluirSetorUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -17,12 +20,16 @@ describe('RemoverSetorUseCase', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: ExcluirSetorUseCase,
+      mocks: [{ provide: SetorRepository, useValue: mockRepository as never }],
+    });
   });
 
   test('Deve remover um setor com sucesso', async () => {
     //ARRANGE
     const inputId = 1;
-    const useCase = new ExcluirSetorUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
       Setor.hidratar({
@@ -51,7 +58,6 @@ describe('RemoverSetorUseCase', () => {
   test('Deve retornar erro: Setor já removido', async () => {
     //ARRANGE
     const inputId = 1;
-    const useCase = new ExcluirSetorUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
       Setor.hidratar({
@@ -78,7 +84,6 @@ describe('RemoverSetorUseCase', () => {
   test('Deve dar erro quando setor não existir', async () => {
     //ARRANGE
     const entrada = 1;
-    const useCase = new ExcluirSetorUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(null);
 

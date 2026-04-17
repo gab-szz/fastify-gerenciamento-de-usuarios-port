@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { configureServiceTest } from 'fastify-decorators/testing';
 import { CriarEnderecoUseCase } from './criar-endereco.use-case.js';
-import type { IEnderecoRepository } from '../infra/endereco.repository.js';
+import { EnderecoRepository } from '../infra/endereco.repository.js';
 import { Endereco } from '../domain/endereco.domain.js';
+import type { IEnderecoRepository } from '../infra/endereco.repository.interface.js';
 
 describe('CriarEnderecoUseCase', () => {
   let mockRepository: IEnderecoRepository;
+  let useCase: CriarEnderecoUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -16,6 +19,13 @@ describe('CriarEnderecoUseCase', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: CriarEnderecoUseCase,
+      mocks: [
+        { provide: EnderecoRepository, useValue: mockRepository as never },
+      ],
+    });
   });
 
   test('Deve criar um endereço com sucesso', async () => {
@@ -29,13 +39,11 @@ describe('CriarEnderecoUseCase', () => {
       cep: '78090756',
       complemento: 'Perto da casa de container',
     };
-    const criarEnderecoUseCase = new CriarEnderecoUseCase(mockRepository);
-
     const enderecoEsperado = Endereco.hidratar({ ...input, id: 1 });
     vi.mocked(mockRepository.inserir).mockResolvedValue(enderecoEsperado);
 
     // ACT
-    const retorno = await criarEnderecoUseCase.executar(input);
+    const retorno = await useCase.executar(input);
 
     // ASSERT
     expect(retorno).toBeInstanceOf(Endereco);

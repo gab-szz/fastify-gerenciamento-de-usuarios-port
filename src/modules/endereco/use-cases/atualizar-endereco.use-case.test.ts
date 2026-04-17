@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { IEnderecoRepository } from '../infra/endereco.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
+import { EnderecoRepository } from '../infra/endereco.repository.js';
 import { Endereco } from '../domain/endereco.domain.js';
 import { AtualizarEnderecoUseCase } from './atualizar-endereco.use-case.js';
+import type { IEnderecoRepository } from '../infra/endereco.repository.interface.js';
 
 describe('AtualizarEnderecoUseCase', () => {
   let mockRepository: IEnderecoRepository;
+  let useCase: AtualizarEnderecoUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -16,6 +19,13 @@ describe('AtualizarEnderecoUseCase', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: AtualizarEnderecoUseCase,
+      mocks: [
+        { provide: EnderecoRepository, useValue: mockRepository as never },
+      ],
+    });
   });
 
   test('Deve atualizar um endereço com sucesso', async () => {
@@ -30,10 +40,6 @@ describe('AtualizarEnderecoUseCase', () => {
       cep: '78090756',
       complemento: 'Perto da casa de container',
     };
-    const atualizarEnderecoUseCase = new AtualizarEnderecoUseCase(
-      mockRepository,
-    );
-
     const enderecoEsperado = Endereco.hidratar({ ...input, id: 1 });
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
       enderecoEsperado,
@@ -41,7 +47,7 @@ describe('AtualizarEnderecoUseCase', () => {
     vi.mocked(mockRepository.atualizar).mockResolvedValue(enderecoEsperado);
 
     // ACT
-    const retorno = await atualizarEnderecoUseCase.executar(input);
+    const retorno = await useCase.executar(input);
 
     // ASSERT
     expect(retorno).toBeInstanceOf(Endereco);
@@ -69,14 +75,11 @@ describe('AtualizarEnderecoUseCase', () => {
       cep: '78090756',
       complemento: 'Perto da casa de container',
     };
-    const atualizarEnderecoUseCase = new AtualizarEnderecoUseCase(
-      mockRepository,
-    );
 
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(null);
 
     // ACT
-    await expect(atualizarEnderecoUseCase.executar(input)).rejects.toThrow(
+    await expect(useCase.executar(input)).rejects.toThrow(
       'Endereço com ID 999 não encontrado',
     );
 

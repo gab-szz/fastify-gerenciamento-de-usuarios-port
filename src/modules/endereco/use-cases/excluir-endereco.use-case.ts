@@ -8,6 +8,10 @@ export class ExcluirEnderecoUseCase {
   @Inject(EnderecoRepository)
   private readonly repository!: IEnderecoRepository;
 
+  constructor(repository?: IEnderecoRepository) {
+    if (repository) this.repository = repository;
+  }
+
   async executar(id: number) {
     const endereco = await this.validarSeEnderecoExiste(id);
     return await this.repository.atualizar(endereco.excluir());

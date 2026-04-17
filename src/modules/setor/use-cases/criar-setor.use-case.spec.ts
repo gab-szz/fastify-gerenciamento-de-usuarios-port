@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { ISetorRepository } from '../infra/setor.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
+import type { ISetorRepository } from '../infra/setor.repository.interface.js';
+import { SetorRepository } from '../infra/setor.repository.js';
 import { CriarSetorUseCase } from './criar-setor.use-case.js';
 import { Setor } from '../domain/setor.domain.js';
 
 describe('CriarSetorUseCase', () => {
   let mockRepository: ISetorRepository;
+  let useCase: CriarSetorUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -17,12 +20,16 @@ describe('CriarSetorUseCase', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: CriarSetorUseCase,
+      mocks: [{ provide: SetorRepository, useValue: mockRepository as never }],
+    });
   });
 
   test('Deve criar um setor com sucesso', async () => {
     //ARRANGE
     const entrada = { nome: 'Tecnologia da Informação' };
-    const useCase = new CriarSetorUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorNome).mockResolvedValue(null);
     vi.mocked(mockRepository.inserir).mockResolvedValue(
@@ -44,7 +51,6 @@ describe('CriarSetorUseCase', () => {
   test('Deve retornar erro ao criar um setor com nome já existente', async () => {
     //ARRANGE
     const entrada = { nome: 'Tecnologia da Informação' };
-    const useCase = new CriarSetorUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorNome).mockResolvedValue({
       nome: 'Tecnologia da Informação',

@@ -9,6 +9,10 @@ export class ExcluirSetorUseCase {
   @Inject(SetorRepository)
   private readonly repository!: ISetorRepository;
 
+  constructor(repository?: ISetorRepository) {
+    if (repository) this.repository = repository;
+  }
+
   async executar(id: number) {
     const setor = await this._consultarSetor(id);
 

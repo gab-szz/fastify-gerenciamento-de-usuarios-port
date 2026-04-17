@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { ISetorRepository } from '../infra/setor.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
 import { AtualizarSetorUseCase } from './atualizar-setor.use-case.js';
+import { SetorRepository } from '../infra/setor.repository.js';
 import { Setor } from '../domain/setor.domain.js';
+import type { ISetorRepository } from '../infra/setor.repository.interface.js';
 
-describe('group', () => {
+describe('AtualizarSetorUseCase', () => {
   let mockRepository: ISetorRepository;
+  let useCase: AtualizarSetorUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -17,12 +20,16 @@ describe('group', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: AtualizarSetorUseCase,
+      mocks: [{ provide: SetorRepository, useValue: mockRepository as never }],
+    });
   });
 
   test('Deve atualizar um setor com sucesso', async () => {
     //ARRANGE
     const entrada = { id: 1, nome: 'Recursos Humanos' };
-    const useCase = new AtualizarSetorUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(
       Setor.hidratar({
@@ -49,7 +56,6 @@ describe('group', () => {
   test('Deve dar erro quando setor não existir', async () => {
     //ARRANGE
     const entrada = { id: 1, nome: 'Recursos Humanos' };
-    const useCase = new AtualizarSetorUseCase(mockRepository);
 
     vi.mocked(mockRepository.consultarPorId).mockResolvedValue(null);
 

@@ -4,7 +4,7 @@ import type { Setor } from '../domain/setor.domain.js';
 import type { ISetorRepository } from './setor.repository.interface.js';
 import { fonteDeDados } from '../../../database/data-source.js';
 import { SetorEntity } from './setor.entity.js';
-import type { Repository } from 'typeorm';
+import { ILike, type Repository } from 'typeorm';
 
 @Service()
 export class SetorRepository implements ISetorRepository {
@@ -26,7 +26,7 @@ export class SetorRepository implements ISetorRepository {
 
   async consultarTodos(): Promise<Setor[]> {
     const entities = await this.repository.find();
-    return entities.map((entity) => SetorMapper.entityParaDomain(entity));
+    return this.converterListaParaDomain(entities);
   }
 
   async consultarPorId(id: number): Promise<Setor | null> {
@@ -34,9 +34,11 @@ export class SetorRepository implements ISetorRepository {
     return entity ? SetorMapper.entityParaDomain(entity) : null;
   }
 
-  async consultarPorNome(nome: string): Promise<Setor | null> {
-    const entity = await this.repository.findOneBy({ nome });
-    return entity ? SetorMapper.entityParaDomain(entity) : null;
+  async consultarPorNome(nome: string): Promise<Setor[]> {
+    const entities = await this.repository.find({
+      where: { nome: ILike(`%${nome}%`) },
+    });
+    return this.converterListaParaDomain(entities);
   }
 
   async atualizar(setor: Setor): Promise<Setor | null> {
@@ -48,5 +50,12 @@ export class SetorRepository implements ISetorRepository {
   async remover(setor: Setor): Promise<boolean> {
     const resultado = await this.repository.delete(setor.id!);
     return resultado.affected ? true : false;
+  }
+
+  private converterListaParaDomain(setores: SetorEntity[]) {
+    if (setores) {
+      return setores.map((setor) => SetorMapper.entityParaDomain(setor));
+    }
+    return [] as Setor[];
   }
 }

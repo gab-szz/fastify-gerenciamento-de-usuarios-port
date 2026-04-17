@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { IEnderecoRepository } from '../infra/endereco.repository.js';
+import { configureServiceTest } from 'fastify-decorators/testing';
+import { EnderecoRepository } from '../infra/endereco.repository.js';
 import { ConsultarEnderecoUseCase } from './consultar-endereco.use-case.js';
 import { Endereco } from '../domain/endereco.domain.js';
+import type { IEnderecoRepository } from '../infra/endereco.repository.interface.js';
 
 describe('ConsultarEnderecoUseCase', () => {
   let mockRepository: IEnderecoRepository;
+  let useCase: ConsultarEnderecoUseCase;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     mockRepository = {
@@ -16,12 +19,18 @@ describe('ConsultarEnderecoUseCase', () => {
       atualizar: vi.fn(),
       remover: vi.fn(),
     };
+
+    useCase = await configureServiceTest({
+      service: ConsultarEnderecoUseCase,
+      mocks: [
+        { provide: EnderecoRepository, useValue: mockRepository as never },
+      ],
+    });
   });
 
   describe('porId', () => {
     test('Deve retornar um endereço pelo ID com sucesso', async () => {
       // ARRANGE
-      const useCase = new ConsultarEnderecoUseCase(mockRepository as any);
       const enderecoEsperado = Endereco.hidratar({
         id: 1,
         rua: 'Rua A',
@@ -46,7 +55,6 @@ describe('ConsultarEnderecoUseCase', () => {
 
     test('Deve retornar null quando endereço não existir', async () => {
       // ARRANGE
-      const useCase = new ConsultarEnderecoUseCase(mockRepository as any);
       vi.mocked(mockRepository.consultarPorId).mockResolvedValue(null);
 
       // ACT
@@ -60,7 +68,6 @@ describe('ConsultarEnderecoUseCase', () => {
   describe('todos', () => {
     test('Deve retornar todos os endereços', async () => {
       // ARRANGE
-      const useCase = new ConsultarEnderecoUseCase(mockRepository as any);
       const endereco1 = Endereco.hidratar({
         id: 1,
         rua: 'Rua A',
@@ -95,7 +102,6 @@ describe('ConsultarEnderecoUseCase', () => {
 
     test('Deve retornar lista vazia quando não houver endereços', async () => {
       // ARRANGE
-      const useCase = new ConsultarEnderecoUseCase(mockRepository as any);
       vi.mocked(mockRepository.consultarTodos).mockResolvedValue([]);
 
       // ACT

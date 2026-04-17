@@ -10,6 +10,10 @@ export class AtualizarSetorUseCase {
   @Inject(SetorRepository)
   private readonly repository!: ISetorRepository;
 
+  constructor(repository?: ISetorRepository) {
+    if (repository) this.repository = repository;
+  }
+
   async executar(input: atualizarSetorDTO) {
     const setor = await this._consultarSetor(input.id);
 

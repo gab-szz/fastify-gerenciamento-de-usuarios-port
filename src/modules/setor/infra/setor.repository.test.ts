@@ -153,39 +153,41 @@ describe('SetorRepository', () => {
       // ARRANGE
       const entrada = 'TI';
 
-      vi.mocked(mockTypeorm.findOneBy).mockResolvedValue({
-        id: 1,
-        nome: 'TI',
-        criadoEm: new Date(),
-        alteradoEm: undefined,
-        excluidoEm: undefined,
-      });
+      vi.mocked(mockTypeorm.find).mockResolvedValue([
+        {
+          id: 1,
+          nome: 'TI',
+          criadoEm: new Date(),
+          alteradoEm: undefined,
+          excluidoEm: undefined,
+        },
+      ]);
 
       // ACT
       const saida = await setorRepository.consultarPorNome(entrada);
 
       // ASSERT
-      expect(saida).toBeInstanceOf(Setor);
-      expect(saida?.nome).toBe('TI');
-      expect(saida?.id).toBe(1);
-      expect(mockTypeorm.findOneBy).toHaveBeenCalledWith({
-        nome: entrada,
+      expect(saida[0]).toBeInstanceOf(Setor);
+      expect(saida[0]!.nome).toBe('TI');
+      expect(saida[0]!.id).toBe(1);
+      expect(mockTypeorm.find).toHaveBeenCalledWith({
+        where: expect.any(Object),
       });
     });
 
-    test('Deve retornar null quando setor não existe', async () => {
+    test('Deve retornar lista vazia quando setor não existe', async () => {
       // ARRANGE
       const entrada = 'Não existe';
 
-      vi.mocked(mockTypeorm.findOneBy).mockResolvedValue(null);
+      vi.mocked(mockTypeorm.find).mockResolvedValue([]);
 
       // ACT
       const saida = await setorRepository.consultarPorNome(entrada);
 
       // ASSERT
-      expect(saida).toBeNull();
-      expect(mockTypeorm.findOneBy).toHaveBeenCalledWith({
-        nome: entrada,
+      expect(saida).toStrictEqual([]);
+      expect(mockTypeorm.find).toHaveBeenCalledWith({
+        where: expect.any(Object),
       });
     });
   });

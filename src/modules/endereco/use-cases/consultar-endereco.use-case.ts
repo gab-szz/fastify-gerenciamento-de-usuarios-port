@@ -7,6 +7,10 @@ export class ConsultarEnderecoUseCase {
   @Inject(EnderecoRepository)
   private readonly repository!: IEnderecoRepository;
 
+  constructor(repository?: IEnderecoRepository) {
+    if (repository) this.repository = repository;
+  }
+
   async porId(id: number) {
     return await this.repository.consultarPorId(id);
   }

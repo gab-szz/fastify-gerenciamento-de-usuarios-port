@@ -1,4 +1,14 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import type { UsuarioEntity } from '../../usuario/infra/usuario.entity.js';
 
 @Entity('endereco')
 export class EnderecoEntity {
@@ -80,4 +90,11 @@ export class EnderecoEntity {
     nullable: true,
   })
   excluidoEm?: Date;
+
+  @Column({ name: 'usuario_id', type: 'int', nullable: false })
+  usuarioId!: number;
+
+  @ManyToOne('UsuarioEntity', 'enderecos')
+  @JoinColumn({ name: 'usuario_id' })
+  usuario!: UsuarioEntity;
 }

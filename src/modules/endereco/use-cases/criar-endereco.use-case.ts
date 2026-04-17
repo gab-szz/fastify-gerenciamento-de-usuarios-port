@@ -9,6 +9,10 @@ export class CriarEnderecoUseCase {
   @Inject(EnderecoRepository)
   private readonly repository!: IEnderecoRepository;
 
+  constructor(repository?: IEnderecoRepository) {
+    if (repository) this.repository = repository;
+  }
+
   async executar(input: criarEnderecoDTO) {
     const endereco = Endereco.criar(input);
     return await this.repository.inserir(endereco);
