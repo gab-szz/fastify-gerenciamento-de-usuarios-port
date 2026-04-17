@@ -4,10 +4,14 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { PerfilEntity } from '../../perfil/infra/perfil.entity.js';
+import { SetorEntity } from '../../setor/infra/setor.entity.js';
+import { EnderecoEntity } from '../../endereco/infra/endereco.entity.js';
 import type { IUsuario } from '../usuario.type.js';
 
 @Entity({ name: 'usuario', schema: 'public' })
@@ -15,33 +19,52 @@ export class UsuarioEntity implements IUsuario {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: 'nome', length: 100, nullable: false })
+  @Column({ name: 'nome', type: 'varchar', length: 50, nullable: false })
   nome!: string;
 
-  @Column({ name: 'nome', type: 'date' })
+  @Column({ name: 'data_nascimento', type: 'date', nullable: true })
   dataNascimento!: Date;
 
-  @Column({ name: 'login', length: 100, nullable: false })
+  @Column({ name: 'login', type: 'varchar', length: 100, nullable: false })
   login!: string;
 
-  @Column({ name: 'senha', length: 255, nullable: false })
+  @Column({ name: 'senha', type: 'varchar', length: 255, nullable: false })
   senha!: string;
 
-  @Column({ name: 'perfil_id', nullable: true })
+  @Column({ name: 'setor_id', type: 'int', nullable: false })
+  setorId!: number;
+
+  @ManyToOne(() => SetorEntity)
+  @JoinColumn({ name: 'setor_id' })
+  setor!: SetorEntity;
+
+  @Column({ name: 'perfil_id', type: 'int', nullable: true })
   perfilId!: number;
 
+  @ManyToOne(() => PerfilEntity)
   @JoinColumn({ name: 'perfil_id' })
   perfil!: PerfilEntity;
+
+  @OneToMany(() => EnderecoEntity, (endereco) => endereco.usuario)
+  enderecos!: EnderecoEntity[];
 
   @Column({ name: 'ativo', type: 'boolean', default: true })
   ativo!: boolean;
 
-  @CreateDateColumn({ name: 'data_criacao', type: 'timestamp' })
+  @CreateDateColumn({ name: 'criado_em', type: 'timestamptz' })
   dataCriacao!: Date;
 
-  @UpdateDateColumn({ name: 'data_atualizacao', type: 'timestamp' })
+  @UpdateDateColumn({
+    name: 'alterado_em',
+    type: 'timestamptz',
+    nullable: true,
+  })
   dataAtualizacao!: Date;
 
-  @Column({ name: 'data_exclusao', nullable: true })
+  @DeleteDateColumn({
+    name: 'excluido_em',
+    type: 'timestamptz',
+    nullable: true,
+  })
   dataExclusao?: Date;
 }

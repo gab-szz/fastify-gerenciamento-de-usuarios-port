@@ -1,13 +1,14 @@
 export type IUsuario = {
-  id: number;
+  id?: number;
   nome: string;
-  dataNascimento: Date;
+  dataNascimento?: Date;
   login: string;
   senha: string;
   perfilId?: number;
+  setorId?: number;
   enderecosId?: number[];
   ativo: boolean;
   dataCriacao: Date;
-  dataAtualizacao: Date;
+  dataAtualizacao?: Date;
   dataExclusao?: Date;
 };
