@@ -2,11 +2,9 @@ import { Service, Inject } from 'fastify-decorators';
 import { ErroRegraNegocio } from '../../../errors/ErroRegraNegocio.error.js';
 import { PermissaoRepository } from '../infra/permissao.repository.js';
 import type { IPermissaoRepository } from '../infra/permissao.repository.interface.js';
-import type { atualizarPermissaoDTO } from '../dtos/atualizar-permissao.dto.js';
-import type { Permissao } from '../domain/permissao.domain.js';
 
 @Service()
-export class AtualizarPermissaoUseCase {
+export class RemoverPermissaoUseCase {
   @Inject(PermissaoRepository)
   private readonly rep!: IPermissaoRepository;
 
@@ -14,21 +12,13 @@ export class AtualizarPermissaoUseCase {
     if (rep) this.rep = rep;
   }
 
-  async exec(input: atualizarPermissaoDTO) {
-    input.nome = input.nome.toUpperCase();
-    const permissao = await this.obterPermissaoPorId(input.id);
-
-    permissao.atualizar(input);
-    return this.rep.salvar(permissao);
-  }
-
-  private async obterPermissaoPorId(id: number): Promise<Permissao> {
+  async exec(id: number) {
     const permissao = await this.rep.consultarPorId(id);
     if (!permissao) {
       throw new ErroRegraNegocio(
-        `Não encontramos uma permissão com o id ${id}`,
+        `Não foi encontrada uma permissão com id ${id}`,
       );
     }
-    return permissao;
+    return this.rep.remover(id);
   }
 }

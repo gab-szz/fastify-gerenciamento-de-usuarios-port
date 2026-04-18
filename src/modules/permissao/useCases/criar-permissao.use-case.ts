@@ -1,12 +1,17 @@
-import { Inject } from 'fastify-decorators';
+import { Service, Inject } from 'fastify-decorators';
 import { Permissao } from '../domain/permissao.domain.js';
 import type { criarPermissaoDTO } from '../dtos/criar-permissao.dto.js';
 import { PermissaoRepository } from '../infra/permissao.repository.js';
 import type { IPermissaoRepository } from '../infra/permissao.repository.interface.js';
 
+@Service()
 export class CriarPermissaoUseCase {
   @Inject(PermissaoRepository)
   private readonly rep!: IPermissaoRepository;
+
+  constructor(rep?: IPermissaoRepository) {
+    if (rep) this.rep = rep;
+  }
 
   async exec(input: criarPermissaoDTO) {
     input.nome = input.nome.toUpperCase();

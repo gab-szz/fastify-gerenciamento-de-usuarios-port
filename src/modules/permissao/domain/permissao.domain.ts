@@ -4,10 +4,10 @@ import type { PermissaoType } from '../permissao.type.js';
 
 export class Permissao {
   readonly id?: number;
-  _nome!: string;
-  _descricao?: string;
-  _criadoEm?: Date;
-  _atualizadoEm?: Date;
+  private _nome!: string;
+  private _descricao?: string;
+  private _criadoEm?: Date;
+  private _atualizadoEm?: Date;
 
   get nome() {
     return this._nome;
@@ -50,7 +50,7 @@ export class Permissao {
     return new Permissao(input);
   }
 
-  async atualizar(input: atualizarPermissaoDTO) {
+  atualizar(input: atualizarPermissaoDTO) {
     if (input.nome.length < 4) {
       throw new Error('Nome da permissão deve possuir ao menos 4 caracteres');
     }

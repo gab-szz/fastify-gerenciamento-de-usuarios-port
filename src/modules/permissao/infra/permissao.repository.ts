@@ -1,3 +1,4 @@
+import { Service } from 'fastify-decorators';
 import type { Repository } from 'typeorm';
 import { PermissaoEntity } from './permissao.entity.js';
 import { fonteDeDados } from '../../../database/data-source.js';
@@ -5,6 +6,7 @@ import { PermissaoMapper } from '../domain/permissao.mapper.js';
 import type { Permissao } from '../domain/permissao.domain.js';
 import type { IPermissaoRepository } from './permissao.repository.interface.js';
 
+@Service()
 export class PermissaoRepository implements IPermissaoRepository {
   private repositoryInstance: Repository<PermissaoEntity>;
 
