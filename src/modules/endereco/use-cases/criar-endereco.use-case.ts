@@ -1,6 +1,6 @@
 import { Service, Inject } from 'fastify-decorators';
 import { Endereco } from '../domain/endereco.domain.js';
-import type { criarEnderecoDTO } from '../endereco.type.js';
+import type { criarEnderecoDTO } from '../types.js';
 import type { IEnderecoRepository } from '../infra/endereco.repository.interface.js';
 import { EnderecoRepository } from '../infra/endereco.repository.js';
 

@@ -6,10 +6,7 @@ import {
   atualizarEnderecoBodySchema,
   atualizarEnderecoSchema,
 } from './dtos/atualizar-endereco.dto.js';
-import {
-  enderecoIdParamSchema,
-  enderecoResponseSchema,
-} from './endereco.type.js';
+import { enderecoIdParamSchema, enderecoResponseSchema } from './types.js';
 import { CriarEnderecoUseCase } from './use-cases/criar-endereco.use-case.js';
 import { ConsultarEnderecoUseCase } from './use-cases/consultar-endereco.use-case.js';
 import { AtualizarEnderecoUseCase } from './use-cases/atualizar-endereco.use-case.js';

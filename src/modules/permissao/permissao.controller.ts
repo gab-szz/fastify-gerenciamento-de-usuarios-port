@@ -10,7 +10,7 @@ import {
   permissaoIdParamSchema,
   permissaoNomeParamSchema,
   permissaoResponseSchema,
-} from './permissao.type.js';
+} from './types.js';
 import { CriarPermissaoUseCase } from './useCases/criar-permissao.use-case.js';
 import { AtualizarPermissaoUseCase } from './useCases/atualizar-permissao.use-case.js';
 import { RemoverPermissaoUseCase } from './useCases/remover-permissao.use-case.js';

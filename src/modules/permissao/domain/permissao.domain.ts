@@ -1,6 +1,6 @@
 import type { atualizarPermissaoDTO } from '../dtos/atualizar-permissao.dto.js';
 import type { criarPermissaoDTO } from '../dtos/criar-permissao.dto.js';
-import type { PermissaoType } from '../permissao.type.js';
+import type { PermissaoType } from '../types.js';
 
 export class Permissao {
   readonly id?: number;

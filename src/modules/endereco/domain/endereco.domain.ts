@@ -1,4 +1,4 @@
-import type { enderecoType } from '../endereco.type.js';
+import type { enderecoType } from '../types.js';
 
 export class Endereco {
   readonly id?: number;

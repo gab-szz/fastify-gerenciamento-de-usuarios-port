@@ -6,7 +6,7 @@ import {
   atualizarPerfilBodySchema,
   atualizarPerfilSchema,
 } from './dtos/atualizar-perfil.dto.js';
-import { perfilIdParamSchema, perfilResponseSchema } from './perfil.type.js';
+import { perfilIdParamSchema, perfilResponseSchema } from './types.js';
 import { CriarPerfilUseCase } from './use-cases/criar-perfil.use-case.js';
 import { AtualizarPerfilUseCase } from './use-cases/atualizar-perfil.use-case.js';
 import { ConsultarPerfilUseCase } from './use-cases/consultar-perfil.use-case.js';

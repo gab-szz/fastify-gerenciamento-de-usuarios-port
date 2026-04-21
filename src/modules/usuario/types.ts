@@ -1,4 +1,4 @@
-export type IUsuario = {
+export type UsuarioType = {
   id?: number;
   nome: string;
   dataNascimento?: Date;

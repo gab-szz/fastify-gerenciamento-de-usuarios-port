@@ -1,6 +1,6 @@
 import type { atualizarPerfilDTO } from '../dtos/atualizar-perfil.dto.js';
 import type { criarPerfilDTO } from '../dtos/criar-perfil.dto.js';
-import type { perfilType } from '../perfil.type.js';
+import type { perfilType } from '../types.js';
 
 export class Perfil {
   readonly id?: number;

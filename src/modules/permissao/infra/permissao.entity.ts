@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   ManyToMany,
 } from 'typeorm';
-import type { PermissaoType } from '../permissao.type.js';
+import type { PermissaoType } from '../types.js';
 import type { PerfilEntity } from '../../perfil/infra/perfil.entity.js';
 
 @Entity({ name: 'permissoes' })
