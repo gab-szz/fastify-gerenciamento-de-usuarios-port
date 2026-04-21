@@ -1,4 +1,4 @@
-import type { setorType } from '../setor.type.js';
+import type { setorType } from '../types.js';
 
 export class Setor {
   readonly id?: number;

@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const perfilSchema = z.object({
+export const setorSchema = z.object({
   id: z.coerce.number().optional(),
   nome: z.string().min(4),
   criadoEm: z.date().optional(),
@@ -8,11 +8,12 @@ export const perfilSchema = z.object({
   excluidoEm: z.date().optional(),
 });
 
-export type perfilType = z.infer<typeof perfilSchema>;
+export type setorType = z.infer<typeof setorSchema>;
 
-export const perfilIdParamSchema = z.object({ id: z.coerce.number().min(1) });
+export const setorIdParamSchema = z.object({ id: z.coerce.number().min(1) });
+export const setorNomeParamSchema = z.object({ nome: z.string() });
 
-export const perfilResponseSchema = z.object({
+export const setorResponseSchema = z.object({
   id: z.number(),
   nome: z.string(),
   criadoEm: z.date().optional(),

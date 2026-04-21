@@ -1,81 +1,143 @@
-import { Controller, GET, POST, PUT, DELETE } from 'fastify-decorators';
+import { Controller, GET, POST, PUT, DELETE, Inject } from 'fastify-decorators';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import z from 'zod';
 import { criarSetorSchema } from './dtos/criar-setor.dto.js';
 import {
-  consultarSetorPorIdSchema,
-  consultarSetorPorNomeSchema,
-} from './dtos/consultar-setor.dto.js';
-import { atualizarSetorSchema } from './dtos/atualizar-setor.dto.js';
-import { excluirSetorSchema } from './dtos/excluir-setor.dto.js';
-
-type SetorUseCases = {
-  criar: { executar: (input: any) => Promise<any> };
-  consultar: {
-    todos: () => Promise<any>;
-    porNome: (nome: string) => Promise<any>;
-    porId: (id: number) => Promise<any>;
-  };
-  atualizar: { executar: (input: any) => Promise<any> };
-  excluir: { executar: (id: number) => Promise<any> };
-};
-
-type SetorRequest = FastifyRequest & { setorUseCases: SetorUseCases };
+  atualizarSetorBodySchema,
+  atualizarSetorSchema,
+} from './dtos/atualizar-setor.dto.js';
+import {
+  setorIdParamSchema,
+  setorNomeParamSchema,
+  setorResponseSchema,
+} from './types.js';
+import { CriarSetorUseCase } from './use-cases/criar-setor.use-case.js';
+import { ConsultarSetorUseCases } from './use-cases/consultar-setor.use-case.js';
+import { AtualizarSetorUseCase } from './use-cases/atualizar-setor.use-case.js';
+import { ExcluirSetorUseCase } from './use-cases/excluir-setor.use-case.js';
 
 @Controller({ route: '/setor' })
 export class SetorController {
-  @POST({ url: '/' })
+  @Inject(CriarSetorUseCase)
+  private readonly criarUseCase!: CriarSetorUseCase;
+
+  @Inject(ConsultarSetorUseCases)
+  private readonly consultarUseCase!: ConsultarSetorUseCases;
+
+  @Inject(AtualizarSetorUseCase)
+  private readonly atualizarUseCase!: AtualizarSetorUseCase;
+
+  @Inject(ExcluirSetorUseCase)
+  private readonly excluirUseCase!: ExcluirSetorUseCase;
+
+  @POST({
+    url: '/',
+    options: {
+      schema: {
+        tags: ['Setor'],
+        summary: 'Cria um novo setor',
+        body: criarSetorSchema,
+        response: { 201: setorResponseSchema },
+      },
+    },
+  })
   async criar(request: FastifyRequest, reply: FastifyReply) {
     const input = criarSetorSchema.parse(request.body);
-    const setor = await (request as SetorRequest).setorUseCases.criar.executar(
-      input,
-    );
+    const setor = await this.criarUseCase.executar(input);
     return reply.status(201).send(setor);
   }
 
-  @GET({ url: '/' })
-  async consultar(request: FastifyRequest, reply: FastifyReply) {
-    const setores = await (
-      request as SetorRequest
-    ).setorUseCases.consultar.todos();
+  @GET({
+    url: '/',
+    options: {
+      schema: {
+        tags: ['Setor'],
+        summary: 'Consulta todos os setores',
+        response: { 200: z.array(setorResponseSchema) },
+      },
+    },
+  })
+  async consultar(_request: FastifyRequest, reply: FastifyReply) {
+    const setores = await this.consultarUseCase.todos();
     return reply.status(200).send(setores);
   }
 
-  @GET({ url: '/nome/:nome' })
+  @GET({
+    url: '/nome/:nome',
+    options: {
+      schema: {
+        tags: ['Setor'],
+        summary: 'Consulta setores por nome',
+        params: setorNomeParamSchema,
+        response: { 200: z.array(setorResponseSchema) },
+      },
+    },
+  })
   async consultarPorNome(request: FastifyRequest, reply: FastifyReply) {
-    const input = consultarSetorPorNomeSchema.parse(request.params);
-    const setores = await (
-      request as SetorRequest
-    ).setorUseCases.consultar.porNome(input.nome);
+    const { nome } = setorNomeParamSchema.parse(request.params);
+    const setores = await this.consultarUseCase.porNome(nome);
     return reply.status(200).send(setores);
   }
 
-  @GET({ url: '/:id' })
+  @GET({
+    url: '/:id',
+    options: {
+      schema: {
+        tags: ['Setor'],
+        summary: 'Consulta setor por ID',
+        params: setorIdParamSchema,
+        response: {
+          200: setorResponseSchema,
+          404: z.object({ message: z.string() }),
+        },
+      },
+    },
+  })
   async consultarPorId(request: FastifyRequest, reply: FastifyReply) {
-    const input = consultarSetorPorIdSchema.parse(request.params);
-    const setor = await (request as SetorRequest).setorUseCases.consultar.porId(
-      input.id,
-    );
+    const { id } = setorIdParamSchema.parse(request.params);
+    const setor = await this.consultarUseCase.porId(id);
+    if (!setor) {
+      return reply.status(404).send({ message: 'Setor não encontrado' });
+    }
     return reply.status(200).send(setor);
   }
 
-  @PUT({ url: '/:id' })
+  @PUT({
+    url: '/:id',
+    options: {
+      schema: {
+        tags: ['Setor'],
+        summary: 'Atualiza um setor',
+        params: setorIdParamSchema,
+        body: atualizarSetorBodySchema,
+        response: { 200: setorResponseSchema },
+      },
+    },
+  })
   async atualizar(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = setorIdParamSchema.parse(request.params);
     const input = atualizarSetorSchema.parse({
-      id: (request.params as { id: number }).id,
+      id,
       nome: (request.body as { nome: string }).nome,
     });
-    const setor = await (
-      request as SetorRequest
-    ).setorUseCases.atualizar.executar(input);
+    const setor = await this.atualizarUseCase.executar(input);
     return reply.status(200).send(setor);
   }
 
-  @DELETE({ url: '/:id' })
+  @DELETE({
+    url: '/:id',
+    options: {
+      schema: {
+        tags: ['Setor'],
+        summary: 'Exclui um setor (soft delete)',
+        params: setorIdParamSchema,
+        response: { 200: setorResponseSchema },
+      },
+    },
+  })
   async excluir(request: FastifyRequest, reply: FastifyReply) {
-    const input = excluirSetorSchema.parse(request.params);
-    const setor = await (
-      request as SetorRequest
-    ).setorUseCases.excluir.executar(input.id);
+    const { id } = setorIdParamSchema.parse(request.params);
+    const setor = await this.excluirUseCase.executar(id);
     return reply.status(200).send(setor);
   }
 }
