@@ -1,6 +1,11 @@
-import { Table, type MigrationInterface, type QueryRunner } from 'typeorm';
+import {
+  Table,
+  TableForeignKey,
+  type MigrationInterface,
+  type QueryRunner,
+} from 'typeorm';
 
-export class CriarTabelaUsuario1776442555161 implements MigrationInterface {
+export class CriarTabelaUsuario1776443500000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -9,15 +14,15 @@ export class CriarTabelaUsuario1776442555161 implements MigrationInterface {
           {
             name: 'id',
             type: 'int',
-            isGenerated: true,
             isPrimary: true,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
             name: 'nome',
             type: 'varchar',
-            isNullable: false,
             length: '50',
+            isNullable: false,
           },
           {
             name: 'login',
@@ -69,10 +74,35 @@ export class CriarTabelaUsuario1776442555161 implements MigrationInterface {
           },
         ],
       }),
+      true,
+    );
+
+    await queryRunner.createForeignKey(
+      'usuario',
+      new TableForeignKey({
+        name: 'FK_usuario_setor',
+        columnNames: ['setor_id'],
+        referencedTableName: 'setor',
+        referencedColumnNames: ['id'],
+        onDelete: 'RESTRICT',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'usuario',
+      new TableForeignKey({
+        name: 'FK_usuario_perfil',
+        columnNames: ['perfil_id'],
+        referencedTableName: 'perfil',
+        referencedColumnNames: ['id'],
+        onDelete: 'SET NULL',
+      }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey('usuario', 'FK_usuario_perfil');
+    await queryRunner.dropForeignKey('usuario', 'FK_usuario_setor');
     await queryRunner.dropTable('usuario');
   }
 }

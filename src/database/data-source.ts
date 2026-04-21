@@ -3,6 +3,9 @@ import { env } from '../config/env.js';
 import logger from '../logger/index.js';
 import { SetorEntity } from '../modules/setor/infra/setor.entity.js';
 import { EnderecoEntity } from '../modules/endereco/infra/endereco.entity.js';
+import { UsuarioEntity } from '../modules/usuario/infra/usuario.entity.js';
+import { PerfilEntity } from '../modules/perfil/infra/perfil.entity.js';
+import { PermissaoEntity } from '../modules/permissao/infra/permissao.entity.js';
 
 export const fonteDeDados = new DataSource({
   type: 'postgres',
@@ -12,8 +15,14 @@ export const fonteDeDados = new DataSource({
   password: env.SENHA_BD,
   database: env.NOME_BD,
   synchronize: false,
-  logging: true, // ✅ Ativar logging para debug
-  entities: [SetorEntity, EnderecoEntity],
+  logging: true,
+  entities: [
+    SetorEntity,
+    EnderecoEntity,
+    UsuarioEntity,
+    PerfilEntity,
+    PermissaoEntity,
+  ],
   migrations: ['src/database/migrations/*.ts'],
   subscribers: [],
   ssl: { rejectUnauthorized: false },

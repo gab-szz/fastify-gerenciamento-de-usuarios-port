@@ -1,6 +1,11 @@
-import { Table, type MigrationInterface, type QueryRunner } from 'typeorm';
+import {
+  Table,
+  TableForeignKey,
+  type MigrationInterface,
+  type QueryRunner,
+} from 'typeorm';
 
-export class CriarTabelaEndereco1773194418375 implements MigrationInterface {
+export class CriarTabelaEndereco1776443510000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -9,51 +14,56 @@ export class CriarTabelaEndereco1773194418375 implements MigrationInterface {
           {
             name: 'id',
             type: 'int',
-            isGenerated: true,
             isPrimary: true,
+            isGenerated: true,
             generationStrategy: 'increment',
           },
           {
             name: 'rua',
             type: 'varchar',
-            isNullable: false,
             length: '30',
+            isNullable: false,
           },
           {
             name: 'numero',
             type: 'varchar',
-            isNullable: false,
             length: '10',
+            isNullable: false,
           },
           {
             name: 'bairro',
             type: 'varchar',
-            isNullable: false,
             length: '30',
+            isNullable: false,
           },
           {
             name: 'cidade',
             type: 'varchar',
-            isNullable: false,
             length: '30',
+            isNullable: false,
           },
           {
             name: 'estado',
             type: 'varchar',
-            isNullable: false,
             length: '20',
+            isNullable: false,
           },
           {
             name: 'cep',
             type: 'varchar',
-            isNullable: false,
             length: '14',
+            isNullable: false,
           },
           {
             name: 'complemento',
             type: 'varchar',
-            isNullable: false,
             length: '50',
+            isNullable: false,
+          },
+          {
+            name: 'usuario_id',
+            type: 'int',
+            isNullable: false,
           },
           {
             name: 'criado_em',
@@ -72,10 +82,23 @@ export class CriarTabelaEndereco1773194418375 implements MigrationInterface {
           },
         ],
       }),
+      true,
+    );
+
+    await queryRunner.createForeignKey(
+      'endereco',
+      new TableForeignKey({
+        name: 'FK_endereco_usuario',
+        columnNames: ['usuario_id'],
+        referencedTableName: 'usuario',
+        referencedColumnNames: ['id'],
+        onDelete: 'CASCADE',
+      }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey('endereco', 'FK_endereco_usuario');
     await queryRunner.dropTable('endereco');
   }
 }

@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
 } from 'typeorm';
 import type { PermissaoType } from '../permissao.type.js';
+import type { PerfilEntity } from '../../perfil/infra/perfil.entity.js';
 
 @Entity({ name: 'permissoes' })
 export class PermissaoEntity implements PermissaoType {
@@ -23,6 +25,9 @@ export class PermissaoEntity implements PermissaoType {
 
   @Column({ name: 'descricao', type: 'text', nullable: true })
   descricao?: string;
+
+  @ManyToMany('PerfilEntity', (perfil: PerfilEntity) => perfil.permissoes)
+  perfis!: PerfilEntity[];
 
   @CreateDateColumn({
     name: 'data_criacao',

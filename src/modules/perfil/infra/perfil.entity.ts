@@ -5,7 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+import { PermissaoEntity } from '../../permissao/infra/permissao.entity.js';
 
 @Entity('perfil')
 export class PerfilEntity {
@@ -20,6 +23,14 @@ export class PerfilEntity {
     default: null,
   })
   nome!: string;
+
+  @ManyToMany(() => PermissaoEntity, (permissao) => permissao.perfis)
+  @JoinTable({
+    name: 'perfil_permissao',
+    joinColumn: { name: 'perfil_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'permissao_id', referencedColumnName: 'id' },
+  })
+  permissoes!: PermissaoEntity[];
 
   @CreateDateColumn({
     name: 'criado_em',
