@@ -10,8 +10,18 @@ import { errorHandler } from './errors/error.handler.js';
 import { SetorController } from './modules/setor/setor.controller.js';
 import { EnderecoController } from './modules/endereco/endereco.controller.js';
 import { PerfilController } from './modules/perfil/perfil.controller.js';
+import { swagger } from './config/swagger.js';
+import {
+  serializerCompiler,
+  validatorCompiler,
+} from 'fastify-type-provider-zod';
 
 const app = fastify();
+
+app.setValidatorCompiler(validatorCompiler);
+app.setSerializerCompiler(serializerCompiler);
+
+await swagger(app);
 
 await app.register(cors, {
   origin: true,
