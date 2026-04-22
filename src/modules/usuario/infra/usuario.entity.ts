@@ -12,10 +12,10 @@ import {
 import { PerfilEntity } from '../../perfil/infra/perfil.entity.js';
 import { SetorEntity } from '../../setor/infra/setor.entity.js';
 import { EnderecoEntity } from '../../endereco/infra/endereco.entity.js';
-import type { IUsuario } from '../types.js';
+import type { UsuarioType } from '../types.js';
 
 @Entity({ name: 'usuario', schema: 'public' })
-export class UsuarioEntity implements IUsuario {
+export class UsuarioEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 

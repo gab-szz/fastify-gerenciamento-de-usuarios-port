@@ -15,6 +15,8 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod';
+import { PermissaoController } from './modules/permissao/permissao.controller.js';
+import { UsuarioController } from './modules/usuario/usuario.controller.js';
 
 const app = fastify();
 
@@ -32,7 +34,13 @@ await app.register(cors, {
 await inicializarConexaoComFonteDeDados();
 
 app.register(bootstrap, {
-  controllers: [SetorController, EnderecoController, PerfilController],
+  controllers: [
+    SetorController,
+    EnderecoController,
+    PerfilController,
+    PermissaoController,
+    UsuarioController,
+  ],
 });
 
 app.setErrorHandler(errorHandler);
