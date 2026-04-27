@@ -27,22 +27,6 @@ function criarMockRequest(overrides: any = {}) {
     body: {},
     params: {},
     query: {},
-    setorUseCases: {
-      criar: {
-        executar: vi.fn(),
-      },
-      consultar: {
-        todos: vi.fn(),
-        porNome: vi.fn(),
-        porId: vi.fn(),
-      },
-      atualizar: {
-        executar: vi.fn(),
-      },
-      excluir: {
-        executar: vi.fn(),
-      },
-    },
     ...overrides,
   } as any;
 }
@@ -51,24 +35,19 @@ describe('SetorController', () => {
   test('Deve criar um setor com sucesso', async () => {
     // ARRANGE
     const mockSetor = criarMockSetor();
+    const mockCriarUseCase = { executar: vi.fn().mockResolvedValue(mockSetor) };
 
-    const request = criarMockRequest({
-      body: { nome: 'Setor de TI' },
-      setorUseCases: {
-        criar: {
-          executar: vi.fn().mockResolvedValue(mockSetor),
-        },
-      },
-    });
-
-    const reply = criarMockReply();
     const controller = new SetorController();
+    (controller as any).criarUseCase = mockCriarUseCase;
+
+    const request = criarMockRequest({ body: { nome: 'Setor de TI' } });
+    const reply = criarMockReply();
 
     // ACT
     await controller.criar(request, reply);
 
     // ASSERT
-    expect(request.setorUseCases.criar.executar).toHaveBeenCalledWith({
+    expect(mockCriarUseCase.executar).toHaveBeenCalledWith({
       nome: 'Setor de TI',
     });
     expect(reply.status).toHaveBeenCalledWith(201);
@@ -81,23 +60,21 @@ describe('SetorController', () => {
       criarMockSetor(),
       criarMockSetor({ id: 2, nome: 'Setor de RH' }),
     ];
+    const mockConsultarUseCase = {
+      todos: vi.fn().mockResolvedValue(mockSetores),
+    };
 
-    const request = criarMockRequest({
-      setorUseCases: {
-        consultar: {
-          todos: vi.fn().mockResolvedValue(mockSetores),
-        },
-      },
-    });
-
-    const reply = criarMockReply();
     const controller = new SetorController();
+    (controller as any).consultarUseCase = mockConsultarUseCase;
+
+    const request = criarMockRequest();
+    const reply = criarMockReply();
 
     // ACT
     await controller.consultar(request, reply);
 
     // ASSERT
-    expect(request.setorUseCases.consultar.todos).toHaveBeenCalled();
+    expect(mockConsultarUseCase.todos).toHaveBeenCalled();
     expect(reply.status).toHaveBeenCalledWith(200);
     expect(reply.send).toHaveBeenCalledWith(mockSetores);
   });
@@ -105,26 +82,21 @@ describe('SetorController', () => {
   test('Deve consultar setores por nome com sucesso', async () => {
     // ARRANGE
     const mockSetores = [criarMockSetor()];
+    const mockConsultarUseCase = {
+      porNome: vi.fn().mockResolvedValue(mockSetores),
+    };
 
-    const request = criarMockRequest({
-      params: { nome: 'Setor de TI' },
-      setorUseCases: {
-        consultar: {
-          porNome: vi.fn().mockResolvedValue(mockSetores),
-        },
-      },
-    });
-
-    const reply = criarMockReply();
     const controller = new SetorController();
+    (controller as any).consultarUseCase = mockConsultarUseCase;
+
+    const request = criarMockRequest({ params: { nome: 'Setor de TI' } });
+    const reply = criarMockReply();
 
     // ACT
     await controller.consultarPorNome(request, reply);
 
     // ASSERT
-    expect(request.setorUseCases.consultar.porNome).toHaveBeenCalledWith(
-      'Setor de TI',
-    );
+    expect(mockConsultarUseCase.porNome).toHaveBeenCalledWith('Setor de TI');
     expect(reply.status).toHaveBeenCalledWith(200);
     expect(reply.send).toHaveBeenCalledWith(mockSetores);
   });
@@ -132,26 +104,43 @@ describe('SetorController', () => {
   test('Deve consultar um setor por ID com sucesso', async () => {
     // ARRANGE
     const mockSetor = criarMockSetor();
+    const mockConsultarUseCase = {
+      porId: vi.fn().mockResolvedValue(mockSetor),
+    };
 
-    const request = criarMockRequest({
-      params: { id: 1 },
-      setorUseCases: {
-        consultar: {
-          porId: vi.fn().mockResolvedValue(mockSetor),
-        },
-      },
-    });
-
-    const reply = criarMockReply();
     const controller = new SetorController();
+    (controller as any).consultarUseCase = mockConsultarUseCase;
+
+    const request = criarMockRequest({ params: { id: 1 } });
+    const reply = criarMockReply();
 
     // ACT
     await controller.consultarPorId(request, reply);
 
     // ASSERT
-    expect(request.setorUseCases.consultar.porId).toHaveBeenCalledWith(1);
+    expect(mockConsultarUseCase.porId).toHaveBeenCalledWith(1);
     expect(reply.status).toHaveBeenCalledWith(200);
     expect(reply.send).toHaveBeenCalledWith(mockSetor);
+  });
+
+  test('Deve retornar 404 quando setor não for encontrado por ID', async () => {
+    // ARRANGE
+    const mockConsultarUseCase = { porId: vi.fn().mockResolvedValue(null) };
+
+    const controller = new SetorController();
+    (controller as any).consultarUseCase = mockConsultarUseCase;
+
+    const request = criarMockRequest({ params: { id: 999 } });
+    const reply = criarMockReply();
+
+    // ACT
+    await controller.consultarPorId(request, reply);
+
+    // ASSERT
+    expect(reply.status).toHaveBeenCalledWith(404);
+    expect(reply.send).toHaveBeenCalledWith({
+      message: 'Setor não encontrado',
+    });
   });
 
   test('Deve atualizar um setor com sucesso', async () => {
@@ -160,25 +149,24 @@ describe('SetorController', () => {
       nome: 'Setor de TI Atualizado',
       alteradoEm: new Date(),
     });
+    const mockAtualizarUseCase = {
+      executar: vi.fn().mockResolvedValue(mockSetor),
+    };
+
+    const controller = new SetorController();
+    (controller as any).atualizarUseCase = mockAtualizarUseCase;
 
     const request = criarMockRequest({
       params: { id: 1 },
       body: { nome: 'Setor de TI Atualizado' },
-      setorUseCases: {
-        atualizar: {
-          executar: vi.fn().mockResolvedValue(mockSetor),
-        },
-      },
     });
-
     const reply = criarMockReply();
-    const controller = new SetorController();
 
     // ACT
     await controller.atualizar(request, reply);
 
     // ASSERT
-    expect(request.setorUseCases.atualizar.executar).toHaveBeenCalledWith({
+    expect(mockAtualizarUseCase.executar).toHaveBeenCalledWith({
       id: 1,
       nome: 'Setor de TI Atualizado',
     });
@@ -188,27 +176,22 @@ describe('SetorController', () => {
 
   test('Deve excluir um setor com sucesso', async () => {
     // ARRANGE
-    const mockSetor = criarMockSetor({
-      excluidoEm: new Date(),
-    });
+    const mockSetor = criarMockSetor({ excluidoEm: new Date() });
+    const mockExcluirUseCase = {
+      executar: vi.fn().mockResolvedValue(mockSetor),
+    };
 
-    const request = criarMockRequest({
-      params: { id: 1 },
-      setorUseCases: {
-        excluir: {
-          executar: vi.fn().mockResolvedValue(mockSetor),
-        },
-      },
-    });
-
-    const reply = criarMockReply();
     const controller = new SetorController();
+    (controller as any).excluirUseCase = mockExcluirUseCase;
+
+    const request = criarMockRequest({ params: { id: 1 } });
+    const reply = criarMockReply();
 
     // ACT
     await controller.excluir(request, reply);
 
     // ASSERT
-    expect(request.setorUseCases.excluir.executar).toHaveBeenCalledWith(1);
+    expect(mockExcluirUseCase.executar).toHaveBeenCalledWith(1);
     expect(reply.status).toHaveBeenCalledWith(200);
     expect(reply.send).toHaveBeenCalledWith(mockSetor);
   });
